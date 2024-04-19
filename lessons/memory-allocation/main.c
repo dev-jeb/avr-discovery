@@ -2,7 +2,6 @@
  * @contact_info:
  * Author: dev_jeb
  * Email: dev_jeb@outlook.com
- * Date: 2024-04-17
  *
  * @usage:
  * Ensure you have successfully setup the development container described in the

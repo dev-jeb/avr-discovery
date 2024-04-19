@@ -1,5 +1,5 @@
 PRG            = main
-OBJ            = main.o prog1.o crt.o
+OBJ            = main.o
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -53,17 +53,19 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -g
+OPTIMIZE       = -O0
 DEFS           =
-LIBS           = -I /workspaces/avr/utils/
+LIBS           = -I /workspaces/avr/utils/ \
+				 -L /workspaces/avr/common/
+				 
 # You should not have to change anything below here.
 CC             = avr-gcc
 AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        =-Wall -Wextra $(OPTIMIZE)  $(LIBS)
+override CFLAGS        =-Wall -Wextra $(OPTIMIZE) $(LIBS)
 override ASFLAGS       = -mmcu=atmega328p
-override LDFLAGS       = -nostartfiles -nostdlib -nodefaultlibs  -Wl,-T "./prog.ld" -Wl,-Map,$(PRG).map
+override LDFLAGS       = -nostartfiles -nostdlib -nodefaultlibs  -Wl,-T "./prog.ld" -Wl,-Map,$(PRG).map 
 
 
 OBJCOPY        = avr-objcopy

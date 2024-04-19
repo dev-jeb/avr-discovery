@@ -1,5 +1,28 @@
+/**
+* @contact_info:
+* Author: dev_jeb
+* Email: dev_jeb@outlook.com
+*
+* @purpose:
+* A linker script to use with avr-ld.
+**/
+
+/**
+* These statements will tell the linker to add certain metadata to the 
+* headers in the executable file. The executable will be the elf32-avr format.
+* The elf headers will contain metadata relating to the ATmega328p.
 OUTPUT_FORMAT("elf32-avr","elf32-avr","elf32-avr")
 OUTPUT_ARCH(avr:5)
+
+/**
+* we will explicitly link with the crt.o file found in the 
+* /common/ directory (We need this to setup the environment prior to calling main). 
+* Notice how we pass the option -L with the path to the common directory in the makefile. 
+* The linker search for the crt.o file in the current directory then when not found traverse 
+* the directories specified with the -L option.
+**/
+INPUT (crt.o)
+
 
 
 /* define useful constants for the ATmega328p */
@@ -35,45 +58,42 @@ SECTIONS
     {
         
 
-        /*
-        must place the reset vector at the beginning of the .text section
-        */
+        /**
+        * must place the reset vector at the beginning of the .text section
+        **/
         crt.o(.vectors)
         KEEP(crt.o(.vectors))
 
-        /* 
-        section contains weak symbol for __init that will ensure reset vector 
-        jumps to __init function if it is not redefined by the user. __init is 
-        defined in crt.s
-        */
+        /** 
+        * section contains weak symbol for __init that will ensure reset vector 
+        * jumps to __init function if it is not redefined by the user. __init is 
+        * defined in crt.s
+        **/
         crt.o(.init)
         KEEP(crt.o(.init))
 
-        /*
-        section contains the  function that will be called by the reset vector
-        sets status register to 0 and initialize the stack pointer
-        */
+        /**
+        * section contains the  function that will be called by the reset vector
+        * sets status register to 0 and initialize the stack pointer
+        **/
         crt.o(.bad_interrupt)
-        KEEP(*(.bad_interrupt))
+        KEEP(crt.o(.bad_interrupt))
 
-        /*
-        section that contains the routines to load the data section from flash to ram
-        and to zero out the bss section
-        */
+        /**
+        * section that contains the routines to load the data section from flash to ram
+        * and to zero out the bss section
+        **/
         *(.init4)
         KEEP(*(.init4))
 
-        /*
-        calls the main function
-        */
+        /**
+        * calls the main function
+        **/
         *(.init9)
         KEEP(*(.init9))
 
         main.o(.text)
         main.o(.text.*)
-
-        prog1.o(.text)
-        prog1.o(.text.*)
 
         *(.text)
 
@@ -83,8 +103,11 @@ SECTIONS
         *(.fini0)
         KEEP(*(.fini0))
 
-        crt.p(.version)
-        KEEP(crt.p(.version))
+        /**
+        * include the version information for crt.s
+        **/
+        crt.o(.version)
+        KEEP(crt.o(.version))
 
         . = ALIGN(2);
         _text_end = .;
