@@ -65,7 +65,7 @@ LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
 override CFLAGS        =-Wall -Wextra $(OPTIMIZE) $(LIBS)
 override ASFLAGS       = -mmcu=atmega328p
-override LDFLAGS       = -nostartfiles -nostdlib -nodefaultlibs  -Wl,-T "./prog.ld" -Wl,-Map,$(PRG).map 
+override LDFLAGS       = -nostartfiles -nostdlib -nodefaultlibs  -Wl,-T "./default.ld" -Wl,-Map,$(PRG).map 
 
 
 OBJCOPY        = avr-objcopy

@@ -9,12 +9,7 @@
  * machine. You can build this lesson using the `make` command
  *
  * @purpose:
- * How do we tell a microcontroller to do something when a certain event occurs?
- * Imagine we have a button connected to our microcontroller. When the button is
- * pressed a general purpose input/output pins (gpio) logic level will change.
- * One way to go about this polling. Within our program we can
- * continuously check the state of the pin and when we see that the pin has
- * changed
+ * 
  *
  * @project_index:
  *

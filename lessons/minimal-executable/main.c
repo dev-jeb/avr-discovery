@@ -15,8 +15,8 @@
  * The makefile basically calls the compilation driver (avr-gcc) with a metric
  * shit ton of options to the compiler, assembler, and linker. The invocation
  * of this driver produces an executable file (main.elf) in the elf32-avr file
- * format. The single dependency of this entire program is crt.o
- * (built from crt.s) located in the /common/ directory. This file is by
+ * format. The single dependency of the executable (program) is crt.o
+ * (built from crt.s) located in the directory '/common/'. This file is by
  * default linked against as it sets up the microcontroller to a state that main
  * expects.
  *
@@ -24,22 +24,27 @@
  * state of three input files (crt.s, main.c, default.ld) to the final
  * executable then you will be in a good place to define an arbitrarily laid out
  * executable (program) and implement said layout. This in my opinion
- * is beautiful and deceivingly complex, hats off to you when you reach that
- * moment.
+ * is a beautiful, rewarding, and deceivingly complex task, hats off to you
+ * when you reach that moment of ... comfortability. Does anyone ever truly
+ * reach that moment?
  *
  * Here are some questions to help point your exploration
  * @important_questions:
- * 1. why are the weak symbols necessary in defining the vector table in cst.s
+ * 1. what is the vector table and its purpose? Why is it the length that
+ *    it is? (check hardware datasheet) Is its structure and location in the
+ *    program assumed by the hardware? (yes)
+ * 2. why do interrupts feel weirdly external to a program? (they are)
+ * 3. why are the weak symbols necessary in defining the vector table in cst.s
  *    and what functionality does this provide? (see interrupts lesson for
  *    insight)
- * 2. why does the crt.s file do what it does? what does it do?
- * 3. do you see and understand the overall flow of the final executable? (use
+ * 4. why does the crt.s file do what it does? what does it do?
+ * 5. do you see and understand the overall flow of the final executable? (use
  *    avr-objdump for this) reset_vector -> init -> copy_data -> zero_bss ->
  *    main
- * 4. what happens if an interrupt is triggered and the user did not define
+ * 6. what happens if an interrupt is triggered and the user did not define
  *    an interrupt handler? Where are we jumping if this occurs? (again
  *    avr-objdump on the executable is great here)
- * 5. how would the user define an interrupt handler? (see question 1)
+ * 7. how would the user define an interrupt handler? (see question 1)
  *
  * The insights brought on from this exploration extend far beyond the scope of
  * this one program.

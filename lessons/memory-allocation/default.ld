@@ -133,7 +133,7 @@ SECTIONS
         __data_end_sram = .;
     }
 
-    .bss __data_end_flash : {
+    .bss __data_end_sram : {
         __bss_start_sram = .;
         *(.bss)
         *(.bss*)
