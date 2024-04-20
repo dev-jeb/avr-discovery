@@ -1,7 +1,7 @@
 /**
  * @contact_info:
  * Author: dev_jeb
- * Email: dev_jeb@outlook.com
+ * Email: developer_jeb@outlook.com
  *
  * @usage:
  * Ensure you have successfully setup the development container described in the
@@ -61,9 +61,6 @@
  *
  * enjoy!
  **/
-
-void main(void) {
-  while (1) {
-    // just chill bro
-  }
-}
+char i_live_in_the_data_section = 0xaa;
+char i_live_in_the_bss_section;
+int main(void) { return 0; }

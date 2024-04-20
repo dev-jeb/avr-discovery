@@ -1,7 +1,7 @@
 /**
 * @contact_info:
 * Author: dev_jeb
-* Email: dev_jeb@outlook.com
+* Email: developer_jeb@outlook.com
 *
 * @purpose:
 * A linker script to use with avr-ld.
@@ -76,6 +76,13 @@ SECTIONS
         crt.o(.vectors)
         KEEP(crt.o(.vectors))
 
+        /**
+        * section contains the  function that will be called by the reset vector
+        * sets status register to 0 and initialize the stack pointer
+        **/
+        crt.o(.bad_interrupt)
+        KEEP(crt.o(.bad_interrupt))
+        
         /** 
         * section contains weak symbol for __init that will ensure reset vector 
         * jumps to __init function if it is not redefined by the user. __init is 
@@ -85,18 +92,24 @@ SECTIONS
         KEEP(crt.o(.init))
 
         /**
-        * section contains the  function that will be called by the reset vector
-        * sets status register to 0 and initialize the stack pointer
-        **/
-        crt.o(.bad_interrupt)
-        KEEP(crt.o(.bad_interrupt))
-
-        /**
         * section that contains the routines to load the data section from flash to ram
         * and to zero out the bss section
         **/
         crt.o(.load_data)
         KEEP(crt.o(.load_data))
+
+        /**
+        * section that contains the routines to zero out the bss section
+        **/
+        crt.o(.zero_bss)
+        KEEP(crt.o(.zero_bss))
+
+        /**
+        * section that contains the routines to call the main function and
+        * loop indefinitely if main returns
+        **/
+        crt.o(.call_main)
+        KEEP(crt.o(.call_main))
 
 
         main.o(.text)
@@ -151,7 +164,9 @@ SECTIONS
     *
     * __data_load_end is the end address (byte after the last data byte) of the .data section in flash.
     **/
-    __data_load_start = LOADADDR(.data);
-    __data_load_end = __data_load_start + SIZEOF(.data);
+    __data_start_flash = LOADADDR(.data);
+    __data_end_flash = __data_start_flash + SIZEOF(.data);
+    __data_bytes_to_read = SIZEOF(.data);
+    __bss_bytes_to_clear = SIZEOF(.bss);
 }
 

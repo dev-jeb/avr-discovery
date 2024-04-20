@@ -65,7 +65,9 @@
 #define EEPM1 5
 
 /**
- * macro to poll the EEPROM ready flag
+ * macro to check if the eeprom is ready to be written to.
+ * The EEPE bit is cleared by hardware when the write operation is completed,
+ * therefore this macro returns 1 when busy and 0 when ready.
  */
 #define eeprom_busy() (EECR & (1 << EEPE))
 
@@ -78,12 +80,13 @@
  * 5. The EEPROM data is available immediately.
  */
 /**=============================================================================*/
+
 /**
  * Read a byte from the EEPROM.
- * @param ptr The address to read from.
+ * @param src The address to read from.
  * @return The byte read from the EEPROM.
  */
-uint8_t eeprom_read_byte(uint8_t *ptr);
+uint8_t eeprom_read_byte(uint8_t *src);
 
 /**
  * EEPROM write sequence:
@@ -95,9 +98,10 @@ uint8_t eeprom_read_byte(uint8_t *ptr);
  * 6. Within four clock cycles after setting EEMPE, write a logical one to EEPE.
  */
 /**=============================================================================*/
+
 /**
  * Write a byte to the EEPROM.
- * @param ptr The address to write to.
+ * @param dst The address to write to.
  * @param data The byte to write to the EEPROM.
  */
-void eeprom_write_byte(uint8_t *ptr, uint8_t data);
+void eeprom_write_byte(uint8_t *dst, uint8_t data);

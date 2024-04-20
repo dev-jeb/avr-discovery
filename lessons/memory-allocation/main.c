@@ -1,7 +1,7 @@
 /**
  * @contact_info:
  * Author: dev_jeb
- * Email: dev_jeb@outlook.com
+ * Email: developer_jeb@outlook.com
  *
  * @usage:
  * Ensure you have successfully setup the development container described in the

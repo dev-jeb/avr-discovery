@@ -1,15 +1,16 @@
 /**
- * @filename:
- * read-write-byte.c
+ * @contact_info:
+ * Author: dev_jeb
+ * Email: developer_jeb@outlook.com
+ *
+ * @usage:
+ * Ensure you have successfully setup the development container described in the
+ * README or ensure you have the necessary tools installed locally on you
+ * machine. You can build this lesson using the `make` command
  *
  * @purpose:
  * this program demonstrates how to read and write a byte to the EEPROM using
  * the EEPROM functions described in `eeprom.h`.
- *
- * @usage:
- * if you have successfully setup the dev environment described in the
- * README you should be able to use the command `make` to compile this program.
- * Make sure your shell instance is in the proper directory.
  */
 #include "eeprom.h"
 

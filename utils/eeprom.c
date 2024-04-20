@@ -3,7 +3,7 @@
 /**
  * implementation of the eeprom_write_byte function
  */
-uint8_t eeprom_read_byte(uint8_t *ptr) {
+uint8_t eeprom_read_byte(uint8_t *src) {
   // ensure that the EEPROM is ready
   while (eeprom_busy()) {
   };
@@ -18,7 +18,7 @@ uint8_t eeprom_read_byte(uint8_t *ptr) {
 /**
  * implementation of the eeprom_write_byte function
  */
-void eeprom_write_byte(uint8_t *ptr, uint8_t data) {
+void eeprom_write_byte(uint8_t *dst, uint8_t data) {
   // ensure that the EEPROM is ready
   while (eeprom_busy()) {
   };

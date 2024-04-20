@@ -1,6 +1,3 @@
-/**
- * A file that gives us a programmatic way to interact with the AVR architecture
- **/
 #ifndef AVR_ARCH_H
 #define AVR_ARCH_H
 #endif

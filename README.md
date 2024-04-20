@@ -1,22 +1,23 @@
 # AVR Exploration
 
-Welcome to AVR discovery! Here, I document my exploration of embedded systems, focusing on the AVR architecture. With an Arduino Uno featuring an ATmega328p microcontroller, I explore fundamental areas such as memory types, I/O, interrupts, and protocols. A lot of these concepts are architectures agnostic and can be applied to other microcontrollers.
+Welcome to AVR discovery! Here, I document my exploration of embedded systems focusing on the AVR architecture. My Arduino Uno has an ATmega328p microcontroller. I will use this microcontroller to explore fundamental areas such as memory types, I/O, interrupts, and protocols. A lot of these concepts are architectures agnostic and can be applied to other microcontrollers.
 
 ## Setup
 
-To start programming for AVR microcontrollers, set up the development environment. Each microcontroller architecture, like AVR, ARM, ..., has its own toolchain. I've simplified this process with a Docker container pre-installed with the AVR toolchain and other essentials. This allows for consistent development across machines with Docker installed. This is also a good opportunity to get familiar with Docker and its benefits.
+To start programming for AVR microcontrollers, we will first need a development environment. Each microcontroller architecture, think AVR, ARM, ..., has its own toolchain. I've simplified this process with a Docker container complete with the AVR toolchain and other essentials. This allows for consistent development across machines with Docker installed. This is also a good opportunity to get familiar with Docker and its benefits.
 
-First you should clone this repository to your local machine.Then follow the setup instructions [here](https://github.com/Johnyb0223/avr-dev-env) to setup your development environment.
+First you should clone this repository to your local machine. Then follow the setup instructions [here](https://github.com/Johnyb0223/avr-dev-env) to setup your development environment.
 
 ## Project Structure
 
-- **common:** Contains common files that are lesson/example agnostic (most of the time)
+- **common:** Contains common files that are mostly lesson/example agnostic
 
-- **examples:** Explore example code that explores different aspects of AVR microcontroller programming. Each example includes a `makefile` for easy building and extensively commented C files.
+- **examples:** Example code that explores different aspects of AVR microcontroller programming. Each example includes a `makefile` for easy building and extensively commented C files.
 
 - **lessons:** A deep dive into various topics.
 
-- **utils:** utility files acting as a library, containing functions used in examples and lessons.
+- **utils:** Utility files acting as a library, containing functions used in examples and lessons. The default makefile includes this directory in the
+linkers search path. Therefore any file in this directory can be included in any example or lesson by using `#include <file.h>`.
 
 ## Table of Contents
 - **common**:
