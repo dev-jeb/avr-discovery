@@ -1,6 +1,6 @@
 # AVR Exploration
 
-Welcome to AVR discovery! Here, I document my exploration of embedded systems focusing on the AVR architecture. My Arduino Uno has an ATmega328p microcontroller. I will use this microcontroller to explore fundamental areas such as memory types, I/O, interrupts, and protocols. A lot of these concepts are architectures agnostic and can be applied to other microcontrollers.
+Welcome to AVR discovery! Here, I document my exploration of embedded systems focusing on the AVR architecture. My Arduino Uno has an ATmega328p microcontroller. I will use this microcontroller to explore fundamental areas such as memory types, I/O, interrupts, and protocols. A lot of these concepts are architecture agnostic and can be applied to other microcontrollers.
 
 ## Setup
 

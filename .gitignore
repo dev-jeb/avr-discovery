@@ -22,3 +22,6 @@ avr-dev-env
 **/*.bin
 **/*.srec
 
+#Ignore my TODO list
+TODO.md
+

@@ -4,19 +4,27 @@
     * Email: developer_jeb@outlook.com
     *
     * @purpose
-    * This file will define and setup the structures and symbols expected
-    * by the main() function. Normally these structures and routines would 
-    * be automatically linked from an existing object file that came with
-    * the toolchain. However, in the makefile we are passing the options 
-    * -nostartfiles, -nostdlib, and -nodefaultlibs to the linker. Why? 
-    * Because we want to do everything on our own. It's about learning.
+    * The routines found in this file put the microcontroller into
+    * the state expected by the main function. Normally these routines
+    * are provided by the toolchain and are by default included at link
+    * time. However, we are going to do everything on our own. In the makefile 
+    * we are passing the options -nostartfiles, -nostdlib, and -nodefaultlibs 
+    * to the linker. This ensures that the toolchain provided routines are not 
+    * included in the final executable and instead our linker script (default.ld)
+    * uses our implementation (crt.s) of these routines.
     **/
 
     /**
-    * This macro is used to define the vectors in the vector table. 
-    * It ensures that the the name passed to the macro is defined in the
-    * relocatable object file as a weak symbol. Therefore jump to name (i.e. __vector_1) 
-    * if defined by user otherwise jump to __bad_interrupt
+    * This macro is used to define the vectors (minus reset vector) in 
+    * the vector table. The name passed to the macro is defined in the
+    * relocatable object file (crt.o) as a weak symbol. The linker treats 
+    * weak symbols specially. If the weak symbol is defined anywhere in
+    * in the set of included object files and is not weak, the linker will
+    * resolve the symbols runtime address to point to that definition. If the 
+    * weak symbol is not defined in the set of included object files the linker
+    * will resolve the symbols runtime address to point to the symbol defined
+    * in the macro. In this case the weak symbol will point to 
+    * the symbol __bad_interrupt.
     **/
     .macro  vector name
     .weak   \name
@@ -27,18 +35,41 @@
     /**
     * @vector_table
     * This is the vector table. It will be placed in the .vectors section 
-    * of the relocatable object file. The attributes "ax" says that this section
-    * is allocatable and executable. While the microcontroller does not know the
-    * difference between allocatable/executable the linker will yell at you if you
-    * put this section into a non allocatable/executable memory section in the final
-    * executable. Better safe then sorry. @progbits says this section contains program data.  
+    * of the relocatable object file (crt.o). In the linker script (default.ld) 
+    * we will place this section at the start of flash as is expected by the
+    * hardware. This is a data structure used by the microcontroller to handle
+    * interrupts. The microcontroller has a finite and defined set of interrupts.
+    * Each interrupt has an entry in the vector table. The exact structure of the 
+    * vector table is defined in the datasheet. When one of the interrupts occurs
+    * the microcontroller will jump to the vector table and execute the command
+    * at that predefined location. This happens to be a jump command to the interrupt
+    * handler defined by you guessed it ... our weak symbols we have talked so much about.
+    * This gives us a way to control what the microcontroller does when a specific interrupt 
+    * occurs. From the description of the macro above how would a user define a handler for 
+    * a specific interrupt? You would define a function with the same name as the weak
+    * symbol for that specific interrupt in the vector table. For example we could
+    * define a function to be called when external interrupt 0 occurs (__vector_1)
+    * by defining the function
+    *                  
+    *    void __vector_1(void) 
+    *    { 
+    *     ...
+    *    } 
+    *
+    * Because the symbol __vector_1 defined by the function is a strong symbol the linker 
+    * will resolve the runtime address of the interrupt handler to point to the function 
+    * defined by the user. 
+    *
+    * vector tables like this are used to implement the interrupt infrastructure of
+    * many different microcontrollers. The implementation details will differ but the
+    * concept is the same.
     **/
     .section .vectors,"ax",@progbits
 	.global __vectors
 	.func   __vectors
 __vectors:
 	jmp    __init
-	vector  __vector_1 ;notice how we use the macro defined above. Why? weak symbols
+	vector  __vector_1 ;notice how we use the macro defined above.
 	vector  __vector_2
 	vector  __vector_3
 	vector  __vector_4
@@ -63,15 +94,16 @@ __vectors:
     vector  __vector_23
     vector  __vector_24
     vector  __vector_25
-    .endfunc;
+    .endfunc
 
     /**
     * This is the default interrupt handler. Remember that all the vectors
-    * in the vector table other then the reset vector were defined a weak symbols
+    * in the vector table other then the reset vector were defined as weak symbols
     * that would be redirected to this handler if not defined by the user.
     * This handler is also defined as a weak symbol. Therefore, if the user
-    * defines __vector_default, the handler will jump to that vector. Otherwise
-    * we will jump to the symbol __vectors which happen to be the reset vector.
+    * defines __vector_default we could define what happens when an interrupt
+    * occurs that has no user defined handler. I have chosen to jump to the
+    * reset vector in the default case.
     **/
     .section .bad_interrupt,"ax",@progbits
     .global __bad_interrupt
@@ -83,11 +115,12 @@ __bad_interrupt:
     .endfunc
 
     /**
-    * So on reset or bad interrupt (an interrupt has occurred but the user did not define a handler)
-    * we will jump to the __init symbol. So what should we do from here? The objective of this file is to
-    * setup the environment that our main() function expects. We will set the zero register (r1) to zero
-    * as is expected by the avr-gcc compiler. We will also zero out the status register. We will set the stack
-    * register to 0x08FF which is the top of the SRAM. The stack register is implemented as two 8-bit registers
+    * So on reset or bad interrupt which jumps to reset we will jump to the __init symbol. 
+    * What should we do from here? The objective of this file is to call our main function
+    * let us setup the environment that our main() function expects. 
+    * We will set the zero register (r1) to zero as is expected by the avr-gcc compiler. 
+    * We will also zero out the status register. We will set the stack register to 0x08FF 
+    * which is the top of the SRAM. The stack register is implemented as two 8-bit registers 
     * in the AVR architecture. This can be seen in the datasheet.
     **/
     .section .init,"ax",@progbits
@@ -111,7 +144,7 @@ __init:
     .global __load_data
     .func __load_data
 __load_data:
-    ldi r17, hi8(__data_end_sram)   ;r17      <-- high byte of (uint8_t*)__data_end_sram
+    ldi r17, hi8(__data_end_sram)    ;r17     <-- high byte of (uint8_t*)__data_end_sram
     ldi r30, lo8(__data_start_flash) ;low(Z)  <-- low byte of (uint8_t*)__data_start_flash
     ldi r31, hi8(__data_start_flash) ;high(Z) <-- high byte of (uint8_t*)__data_start_flash
     ldi r28 , lo8(__data_start_sram) ;low(Y)  <-- low byte of (uint8_t*)__data_start_sram
@@ -181,7 +214,7 @@ __exit:
     **/
     .section .crt_version,"S",@progbits
     .global crt_version_string
-crt_version_string:
+__crt_version_string:
     .string "Version 1.0"
     .byte 0
 

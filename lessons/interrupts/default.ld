@@ -29,46 +29,25 @@ OUTPUT_ARCH(avr:5)
 **/
 INPUT (crt.o)
 
-
-
-/**
-* define useful constants for the ATmega328p 
-**/
-__TEXT_REGION_ORIGIN__           = 0;
-__TEXT_REGION_LENGTH__           = 32768;
-__DATA_REGION_ORIGIN__           = 0x800000;
-__DATA_REGION_LENGTH__           = 0x08ff;
-__EEPROM_REGION_LENGTH__         = 1K;
-__FUSE_REGION_LENGTH__           = 1K;
-__LOCK_REGION_LENGTH__           = 1K;
-__SIGNATURE_REGION_LENGTH__      = 1K;
-__USER_SIGNATURE_REGION_LENGTH__ = 1K;
-
-/**
-* define some useful symbols 
-**/
-__stack = 0x;
-
 /** 
 * define the memory layout of the ATmega328p 
 **/
 MEMORY
 {
-  text   (rx)            : ORIGIN = __TEXT_REGION_ORIGIN__, LENGTH = __TEXT_REGION_LENGTH__
-  data   (rw!x)          : ORIGIN = __DATA_REGION_ORIGIN__, LENGTH = __DATA_REGION_LENGTH__
-  eeprom (rw!x)          : ORIGIN = 0x810000, LENGTH = __EEPROM_REGION_LENGTH__
-  fuse      (rw!x)       : ORIGIN = 0x820000, LENGTH = __FUSE_REGION_LENGTH__
-  lock      (rw!x)       : ORIGIN = 0x830000, LENGTH = __LOCK_REGION_LENGTH__
-  signature (rw!x)       : ORIGIN = 0x840000, LENGTH = __SIGNATURE_REGION_LENGTH__
-  user_signatures (rw!x) : ORIGIN = 0x850000, LENGTH = __USER_SIGNATURE_REGION_LENGTH__
+  FLASH            (rx)  : ORIGIN = 0x000000, LENGTH = 32K
+  SRAM            (rw!x) : ORIGIN = 0x800100, LENGTH = 2K
+  EEPROM          (rw!x) : ORIGIN = 0x810000, LENGTH = 1K
+  FUSE            (rw!x) : ORIGIN = 0x820000, LENGTH = 1K
+  LOCK            (rw!x) : ORIGIN = 0x830000, LENGTH = 1K
+  SIGNATURE       (rw!x) : ORIGIN = 0x840000, LENGTH = 1K
+  USER_SIGNATURES (rw!x) : ORIGIN = 0x850000, LENGTH = 1K
 }
 
 SECTIONS
 {
 
-    .text 0x0000   : 
+    .program : 
     {
-        
 
         /**
         * must place the reset vector at the beginning of the .text section
@@ -111,7 +90,6 @@ SECTIONS
         crt.o(.call_main)
         KEEP(crt.o(.call_main))
 
-
         main.o(.text)
         main.o(.text.*)
 
@@ -122,16 +100,29 @@ SECTIONS
         *(.text)
 
         /**
+        * Here we will include the .rodata section. This section contains read only data 
+        * that lives only in flash.
+        **/
+        *(.rodata)
+        KEEP(*(.rodata))
+
+        /**
         * include the version information for crt.s
         **/
-        crt.o(.version)
-        KEEP(crt.o(.version))
+        crt.o(.crt_version)
+        KEEP(crt.o(.crt_version))
 
         . = ALIGN(2);
         _text_end = .;
-    }
+    }> FLASH
 
-    .data 0x800100  : AT (ADDR(.text) + SIZEOF (.text)) {
+    /**
+    * The AT(ADDR(.program) + SIZEOF (.program)) described the load address of the .data section.
+    * This is where the .data section will be placed in flash. However the virtual memory address
+    * will be the ORIGIN defined by the MEMORY directive above.
+    **/
+    .data : AT (ADDR(.program) + SIZEOF (.program)) 
+    {
         /**
         * __data_start_sram will be the offset into the .data section from the virtual
         * memory address (0x800100) therefore this is the start address of data in sram.
@@ -144,15 +135,16 @@ SECTIONS
         *(.gnu.linkonce.r*)
         . = ALIGN(2);
         __data_end_sram = .;
-    }
+    }> SRAM
 
-    .bss __data_end_sram : {
+    .bss : 
+    {
         __bss_start_sram = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
         __bss_end_sram = .;
-    }> data
+    }> SRAM
     __HEAP_START = .;
 
     /**

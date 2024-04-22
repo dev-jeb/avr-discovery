@@ -44,11 +44,11 @@
  * this category.
  *
  * @non_volatile_memory: memory that retains its contents when the power is
- * turned off. The flash memory and the electrically erasable programable
+ * turned off. Both the flash memory and the electrically erasable programable
  * read-only memory (EEPROM) fall into this category.
  *
  * Take a moment to think about the consequences of the above definitions. When
- * the microcontroller is powered off, the contents of the sram are lost. What
+ * the microcontroller is powered off, the contents of the SRAM is lost. What
  * would happen if this were the only memory available to us on the
  * microcontroller? This would mean that all the machine code that represents
  * our programs instructions and data would not persist. We would need to
@@ -68,7 +68,7 @@
  * at a time.
  *
  * With the definition/characteristics of volatile and non-volatile memory in
- * mind, we can see no explore the memory available to us on the atmega328p
+ * mind, we can now explore the memory available to us on the atmega328p
  * microcontroller.
  *
  * @flash_memory:
@@ -104,27 +104,23 @@
  * 0x3ffe |--------------------------|
  *
  * @sram_memory:
- * The sram on an atmega328p is 2KB in size where 1KB equals 1024 bytes.
+ * The SRAM on an atmega328p is 2KB in size where 1KB equals 1024 bytes.
  *
- * sram size (bytes)       : 2048
+ * SRAM size (bytes)       : 2048
  *
  * @note:
- * above we have stated that there are 2048 bytes of sram available to us but
- * when looking at the datasheet we see the address space for sram goes
+ * above we have stated that there are 2048 bytes of SRAM available to us but
+ * when looking at the datasheet we see the address space for SRAM goes
  * from [0x0000, 0x08FF] which means there are 2304 addressable bytes available
  * to us. So where do the extra 256 bytes come from? This is an abstraction that
  * the microcontroller presents to us. Only the address interval [0x0060,
- * 0x08FF] is actual physical (hardware) sram. The address interval [0x0000,
- * 0x005F] is an abstraction that the microcontroller presents to us. This
- * abstraction is used to access the general working registers and i\o registers
- * of the microcontroller. The register file and i/o registers are not
- * implemented in hardware as sram. However, the microcontroller presents them
- * to us as if they were. Therefore the address interval [0x0000, 0x00FF] is
- * reserved for the register file, non sram i/o registers and sram external i/o
- * registers.
+ * 0x08FF] is actual physical (hardware) SRAM. The address interval [0x0000,
+ * 0x005F] is not implemented by SRAM hardware. This abstraction is used to
+ * access the general working registers and i\o registers of the
+ * microcontroller.
  *
  * @sram_diagram:
- *                   sram
+ *                   SRAM
  * 0x0000 |--------------------------|
  * 0x0001 |                          |
  *        |      32 x 8 registers    |
@@ -157,34 +153,44 @@
  *
  *                   FLASH
  * 0x0000 |--------------------------|
- *        |    Prog1 (.prog1_text)   |
- * 0x0002 |                          |
- *        |   byte 1   |   byte 2    |
- *        |--------------------------|
+ *        |    (.prog1_main_text)    |
+ *        |           ...            |
  *        |           ...            |
  *        |           ...            |
  * 0x1000 |--------------------------|
- *        |    Prog2 (.prog2_text)   |
+ *        |    (.prog2_main_text)    |
  *        |           ...            |
  *        |           ...            |
  *        |           ...            |
  * 0x2000 |--------------------------|
- *        |           ...            |
- *        |           ...            |
+ *        |         .rodata          |
+ *        |     (prog1 & prog2)      |
  *        |           ...            |
  *        |           ...            |
  * 0x3000 |--------------------------|
- *        |           ...            |
- *        |           ...            |
+ *        |      .data + .bss        |
+ *        |     (prog1 & prog2)      |
  *        |           ...            |
  *        |           ...            |
  * 0x3ffe |--------------------------|
  *
+ * main.c will have the following sections:
+ * - .main_text: stack variables, function code
+ * - .data: one global variable that is initialized and one static global that
+ * is initialized.
+ * - .bss: one global variable that is not initialized
+ * -rodata: one global variable that is const
  *
- * sram_size (bytes): 2,048
- * sram_page_size (bytes): 256
+ * prog1.c will have the following sections:
+ * - .prog1_main_text: function code
+ * - .data: one global variable that is initialized and one static global that
+ * is initialized.
+ * - .bss: one global variable that is not initialized
+ * -rodata: one global variable that is const
  *
- *                    sram
+ *
+ *
+ *                    SRAM
  * 0x0000 |--------------------------|
  * 0x0001 |                          |
  *        |      32 x 8 registers    |
@@ -198,30 +204,46 @@
  *        |160 x 8 ext i\o registers |
  *        |                          |
  * 0x0100 |--------------------------|_data_start
- *        |           ...            |
  *        |       .data + .bss       |
- *        |           ...            |
+ *        |      (prog1 & prog2)     |
+ *        |            ...           |
  *        |--------------------------|_data_end
- *        |           ...            |
- *        |           ...            |
- *        |           ...            |
- *        |           ...            |
+ *        |            ...           |
+ *        |            ...           |
+ *        |            ...           |
+ *        |           stack          |
  * 0x08ff |--------------------------|_stack_start
  *
- * @observations:
- * 1. invariant: (stack_end - heap_end) > 0 otherwise a collision has occurred
  *
  * @object_file:
  * an object file is a file that is produced at multiple levels of the
- * compilation process. An object file prior to linking is called a relocatable
- * object file. This file contains machine code split into sections where each
- * section is a contiguous block of memory
+ * compilation process. The assembler and linker are the producers of
+ * object files. The compiler simply produces an assembly file from the source
+ * code and passes it off to the assembler. An object file before linking is
+ * know as relocatable. After linking you have an executable. These object files
+ * will contain among other things the machine code broken up into sections. The
+ * compiler outputs different `types of instructions` into different sections.
+ * Each section has some attributes. These attributes are important as they tell
+ * us if the machine code found in this section is executable, read-only,
+ * writable, ..., allocatable. We can use the linker to put sections in
+ * different parts of memory. For example machine code in the data section and
+ * bss section is writable. This means the data needs to live in SRAM so we can
+ * quickly and efficiently read and write to it. Machine code in the text
+ * section is read-only. This means it can live in flash memory. We will explore
+ * these sections in more detail.
+ *
+ *  @task:
+ *  Build this lesson and use `avr-objdump -D object_file` to explore some
+ *  object files. Use `avr-readelf -a object_file` to see other information.
+ *  Notice that main.elf is an executable object file and it is our output.
+ *  Note some differences between the relocatable object files and the
+ *  executable object file.
  *
  * @sections:
  * The compiler will place different kinds of data in different sections of the
  * object file. When we go to link object files together into one executable
  * file these sections will be combined into the final memory layout of the
- * microcontroller. THe linker gives us the ability to control where these
+ * microcontroller. The linker gives us the ability to control where these
  * sections are placed in the final memory layout.
  *
  * since this is an uninitialized global variable, it will be stored in the
@@ -230,8 +252,16 @@
  * prior to the main function being called. This is done by the c runtime.
  */
 #include "types.h"
-// initalized variable are stored in the data section of the object file
+/**
+ * @data_section:
+ * The data section of the object file is where initialized global variables are
+ * as well as static variables that are initialized.
+ */
 uint8_t i_live_in_prog1_data = 0xAA;
+static uint8_t i_live_in_prog1_data_static = 0xBB;
+
+// what happens to a const variable in the data section?
+const uint8_t i_am_a_const = 0xDD;
 
 // uninitialized variables are stored in the BSS section of the object file
 uint8_t i_live_in_prog1_bss;
