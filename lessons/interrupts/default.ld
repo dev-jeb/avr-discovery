@@ -161,4 +161,3 @@ SECTIONS
     __data_bytes_to_read = SIZEOF(.data);
     __bss_bytes_to_clear = SIZEOF(.bss);
 }
-

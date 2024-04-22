@@ -45,8 +45,8 @@ MEMORY
 
 SECTIONS
 {
-
-    .program : 
+    
+    .main_text 0x0000 : 
     {
 
         /**
@@ -94,19 +94,6 @@ SECTIONS
         main.o(.text.*)
 
         /**
-        * if object files are included (other than main.o) we will include the text sections here.
-        * We could also get rid of the main.o wildcards above and accumulate all the text sections here.
-        **/
-        *(.text)
-
-        /**
-        * Here we will include the .rodata section. This section contains read only data 
-        * that lives only in flash.
-        **/
-        *(.rodata)
-        KEEP(*(.rodata))
-
-        /**
         * include the version information for crt.s
         **/
         crt.o(.crt_version)
@@ -114,14 +101,30 @@ SECTIONS
 
         . = ALIGN(2);
         _text_end = .;
-    }> FLASH
+    }
+
+    .prog1 0x1000 : 
+    {
+        prog1.o(.text)
+        prog1.o(.text.*)
+
+    }
+
+    /**
+    * Here we will include the .rodata section. This section contains read only data 
+    * that lives only in flash.
+    **/
+    .rodata 0x2000 :
+    {
+        *(.rodata)
+    }
 
     /**
     * The AT(ADDR(.program) + SIZEOF (.program)) described the load address of the .data section.
     * This is where the .data section will be placed in flash. However the virtual memory address
     * will be the ORIGIN defined by the MEMORY directive above.
     **/
-    .data : AT (ADDR(.program) + SIZEOF (.program)) 
+    .data : AT (0x3000) 
     {
         /**
         * __data_start_sram will be the offset into the .data section from the virtual
@@ -137,7 +140,7 @@ SECTIONS
         __data_end_sram = .;
     }> SRAM
 
-    .bss : 
+    .bss : AT(ADDR(.data) + SIZEOF(.data))
     {
         __bss_start_sram = .;
         *(.bss)
