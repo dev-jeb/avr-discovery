@@ -1,5 +1,6 @@
 PRG            = main
-OBJ            = main.o
+OBJ            = main.o \
+                 /workspaces/avr/utils/object-files/interrupt.o
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -53,10 +54,11 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -O0
+OPTIMIZE       = -O0 -g
 DEFS           =
-LIBS           = -I /workspaces/avr/utils/ \
-				 -L /workspaces/avr/common/
+LIBS           = -I /workspaces/avr/utils/include \
+				 -Wl,-L /workspaces/avr/common/ \
+				 -Wl,-L /workspaces/avr/utils/object-files/
 				 
 # You should not have to change anything below here.
 CC             = avr-gcc

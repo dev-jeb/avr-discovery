@@ -2,7 +2,7 @@
 
 # Assembler and Assembler flags
 AS = avr-as
-ASFLAGS = -mmcu=atmega328p
+ASFLAGS = -g -mmcu=atmega328p
 
 # OBJ_CPY
 OBJ_CPY = avr-objcopy
@@ -18,7 +18,7 @@ OBJ_FILES = crt.o
 all: $(OBJ_FILES)
 
 $crt.o: crt.s 
-	$(AS) $(ASFLAGS) -c $< -o $@
+	$(AS) $(ASFLAGS)  -c $< -o $@
 
 clean:
 	rm -rf crt.o

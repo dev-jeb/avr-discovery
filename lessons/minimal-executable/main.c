@@ -63,8 +63,9 @@
  */
 char i_live_in_the_data_section = 0xaa;
 char i_live_in_the_bss_section;
-const char *i_live_in_the_rodata_section = "lorem ipsum";
+const char i_live_in_the_rodata_section = 0x33;
 int main(void) {
   char i_live_on_the_stack = 0x55;
+  i_live_on_the_stack += 1;
   return 0;
 }

@@ -46,7 +46,7 @@ MEMORY
 SECTIONS
 {
 
-    .program : 
+    .text : 
     {
 
         /**
@@ -121,7 +121,7 @@ SECTIONS
     * This is where the .data section will be placed in flash. However the virtual memory address
     * will be the ORIGIN defined by the MEMORY directive above.
     **/
-    .data : AT (ADDR(.program) + SIZEOF (.program)) 
+    .data : AT (ADDR(.text) + SIZEOF (.text)) 
     {
         /**
         * __data_start_sram will be the offset into the .data section from the virtual
@@ -130,9 +130,6 @@ SECTIONS
         **/
         __data_start_sram = .;
         *(.data)
-        *(.data*)
-        *(.gnu.linkonce.d*)
-        *(.gnu.linkonce.r*)
         . = ALIGN(2);
         __data_end_sram = .;
     }> SRAM

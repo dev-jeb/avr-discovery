@@ -3,6 +3,7 @@
 #endif
 
 #include "avr-arch.h"
+#include "types.h"
 
 /**
  * macro to specify the value should be stored in EEPROM.  THis attribute is
@@ -31,8 +32,8 @@
  * and intepret them unsigned.
  */
 #define eeprom_set_addr(addr)                                                  \
-  EEARL = (uint8_t)(addr & 0xFF);                                              \
-  EEARH = (uint8_t)((addr >> 8) & 0x03);
+  EEARL = (uint8_t)(*(uint16_ptr_t)addr & 0xFF);                               \
+  EEARH = (uint8_t)((*(uint16_ptr_t)addr >> 8) & 0x03);
 
 /**
  * EEPROM data register

@@ -12,7 +12,7 @@ typedef uint8_t *uint8_ptr_t;
 typedef unsigned short uint16_t;
 
 // an unsigned 16-bit pointer type
-typedef unsigned short *uint16_ptr_;
+typedef unsigned short *uint16_ptr_t;
 
 // a void pointer type
 typedef void *void_ptr_t;

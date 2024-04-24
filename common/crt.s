@@ -150,11 +150,13 @@ __load_data:
     ldi r28 , lo8(__data_start_sram) ;low(Y)  <-- low byte of (uint8_t*)__data_start_sram
     ldi r29 , hi8(__data_start_sram) ;high(Y) <-- high byte of (uint8_t*)__data_start_sram
     rjmp __load_data_start
+    .endfunc
     /**
     * next we need to load the byte pointed to by the Z pointer into the register r0 and 
     * increment the Z pointer. Then we will store the value in r0 into the SRAM pointed to
     * by the Y pointer and increment the Y pointer.
     **/
+    .func __load_data_loop
 __load_data_loop:
     lpm r0, Z+ ;load the byte pointed to by Z into r0 and increment Z
     st Y+, r0  ;store the value in r0 into the SRAM pointed to by Y and increment Y
@@ -202,6 +204,9 @@ __call_main:
     sei          ;enable interrupts
     call main    ;call the main function
     cli          ;disable interrupts
+    .endfunc
+
+    .func __exit
 __exit:
     jmp __exit   ;loop after main return
     .endfunc
