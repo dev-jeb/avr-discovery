@@ -8,10 +8,11 @@
     * the state expected by the main function. Normally these routines
     * are provided by the toolchain and are by default included at link
     * time. However, we are going to do everything on our own. In the makefile 
-    * we are passing the options -nostartfiles, -nostdlib, and -nodefaultlibs 
-    * to the linker. This ensures that the toolchain provided routines are not 
-    * included in the final executable and instead our linker script (default.ld)
-    * uses our implementation (crt.s) of these routines.
+    *  of our examples/lessons/projects we are passing the options 
+    * -nostartfiles, -nostdlib, and -nodefaultlibs to the linker. 
+    * This ensures that the toolchain provided routines are not 
+    * included in the final executable and instead our linker script
+    * (default.ld) uses our implementation (this file) of these routines.
     **/
 
     /**
@@ -206,6 +207,7 @@ __call_main:
     cli          ;disable interrupts
     .endfunc
 
+    .global __exit
     .func __exit
 __exit:
     jmp __exit   ;loop after main return

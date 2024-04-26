@@ -1,6 +1,5 @@
 #ifndef AVR_TYPES_H
 #define AVR_TYPES_H
-#endif
 
 /**
  * @contact_info:
@@ -28,3 +27,5 @@ typedef void *void_ptr_t;
 
 // a null pointer constant
 typedef void *null_ptr_t;
+
+#endif // AVR_TYPES_H

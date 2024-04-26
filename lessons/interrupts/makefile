@@ -58,7 +58,6 @@ OPTIMIZE       = -O0 -g
 DEFS           =
 LIBS           = -I /workspaces/avr/utils/include \
 				 -Wl,-L /workspaces/avr/common/ \
-				 -Wl,-L /workspaces/avr/utils/object-files/
 				 
 # You should not have to change anything below here.
 CC             = avr-gcc
@@ -124,5 +123,10 @@ pdf: $(PRG).pdf
 	$(FIG2DEV) -L pdf $< $@
 %.png: %.fig
 	$(FIG2DEV) -L png $< $@
+
+size:
+	avr-size -C --radix=16 --mcu=atmega328p $(PRG)
+
+.Phony: all clean size
 
 

@@ -64,9 +64,9 @@ AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
 override CFLAGS        = -std=c99 -Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
-override LDFLAGS       = -nostdlib -nodefaultlibs  \
-                         -Wl,-T "./default.ld"                   \
-                         -Wl,--detailed-mem-usage                \
+override LDFLAGS       = -nostdlib -nodefaultlibs                                       \
+                         -Wl,-T "/workspaces/avr/lessons/minimal-executable/default.ld" \
+                         -Wl,--detailed-mem-usage                                       \
 						 -Wl,-Map,$(PRG).map 
 
 

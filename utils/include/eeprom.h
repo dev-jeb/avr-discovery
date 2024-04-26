@@ -1,6 +1,5 @@
 #ifndef AVR_EEPROM_H
 #define AVR_EEPROM_H
-#endif
 
 /**
  * @contact_info:
@@ -115,3 +114,5 @@ uint8_t eeprom_read_byte(uint8_t *src);
  * @param data The byte to write to the EEPROM.
  */
 void eeprom_write_byte(uint8_t *dst, uint8_t data);
+
+#endif // AVR_EEPROM_H

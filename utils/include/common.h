@@ -1,6 +1,5 @@
 #ifndef AVR_COMMON_H
 #define AVR_COMMON_H
-#endif
 
 /**
  * @contact_info:
@@ -30,3 +29,5 @@
   } while (0)
 // Check if a bit in a register is 1
 #define IS_SET(REGISTER, BIT) (REGISTER & (1 << BIT)) > 0
+
+#endif // AVR_COMMON_H

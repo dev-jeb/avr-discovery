@@ -1,6 +1,6 @@
+#include "interrupt.h"
 #include "avr-arch.h"
 #include "common.h"
-#include "types.h"
 
 /**
  * @function:
@@ -31,11 +31,12 @@ static void interrupt_prologue() {
   // Disable global interrupts
   cli();
   // Save the status register to a temporary variable
-  uint8_t temp = SREG;
-  push(temp);
+  R16 = SREG;
   // Save the state of the registers
   R2 = R0;
   R3 = R1;
+  // ensure zero register is zero
+  R1 = 0;
   R4 = R18;
   R5 = R19;
   R6 = R20;
@@ -69,8 +70,7 @@ static void interrupt_epilogue() {
   R30 = R14;
   R31 = R15;
   // Restore the status register
-  uint8_t temp = pop();
-  SREG = temp;
+  SREG = R16;
   // Enable global interrupts
 };
 

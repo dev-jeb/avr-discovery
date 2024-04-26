@@ -120,4 +120,9 @@ pdf: $(PRG).pdf
 %.png: %.fig
 	$(FIG2DEV) -L png $< $@
 
+size:
+	avr-size -C --radix=16 --mcu=atmega328p $(PRG)
+
+.Phony: all clean size
+
 

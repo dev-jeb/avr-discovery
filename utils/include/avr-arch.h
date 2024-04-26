@@ -1,6 +1,5 @@
 #ifndef AVR_ARCH_H
 #define AVR_ARCH_H
-#endif
 
 /**
  * @contact_info:
@@ -174,3 +173,5 @@ static inline __attribute__((always_inline)) void cli() { asm volatile("cli"); }
 
 // set the global interrupt enable bit
 static inline __attribute__((always_inline)) void sei() { asm volatile("sei"); }
+
+#endif // AVR_ARCH_H

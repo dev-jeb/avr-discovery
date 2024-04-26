@@ -1,6 +1,5 @@
 #ifndef AVR_INTERRUPT_H
 #define AVR_INTERRUPT_H
-#endif
 
 /**
  * @contact_info:
@@ -74,3 +73,5 @@ void interrupt_trigger_int0();
  * @param arg1: uint8_ptr_t, can be used to pass a flag or data to the ISR
  */
 void interrupt_trigger_int0_a1(uint8_ptr_t arg1);
+
+#endif // AVR_INTERRUPT_H

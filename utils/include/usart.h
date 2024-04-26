@@ -1,6 +1,5 @@
 #ifndef AVR_USART_H
 #define AVR_USART_H
-#endif
 
 /**
  * @contact_info:
@@ -173,3 +172,5 @@ void usart_send_char(uint8_t data);
  * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
  */
 void usart_send_string(uint8_ptr_t data);
+
+#endif // AVR_USART_H
