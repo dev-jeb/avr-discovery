@@ -170,7 +170,7 @@
  */
 
 // clear the global interrupt enable bit
-__always_inline void cli() { asm volatile("cli"); }
+static inline __attribute__((always_inline)) void cli() { asm volatile("cli"); }
 
 // set the global interrupt enable bit
-__always_inline void sei() { asm volatile("sei"); }
+static inline __attribute__((always_inline)) void sei() { asm volatile("sei"); }

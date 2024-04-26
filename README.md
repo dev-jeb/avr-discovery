@@ -27,7 +27,9 @@ linkers search path. Therefore any file in this directory can be included in any
     - **eeprom**:
         - **[read-write-byte](examples/eeprom/read-write-byte/main.c)**:
             demonstrates how to read and write a byte to the EEPROM memory of the microcontroller.
-    - **usart**: to be developed
+    - **usart**:
+        -**[usart-send-char](examples/usart/usart-send-char/main.c)**:
+            demonstrates how to send a character over USART.
 - **lessons**:
    - **[interrupts](lessons/interrupts/main.c)**:
    - **[memory-allocation](lessons/memory-allocation/main.c)**:
@@ -42,8 +44,9 @@ linkers search path. Therefore any file in this directory can be included in any
    - **[minimal-executable](lessons/minimal-executable/main.c)**:
    The executable created by building this directory is a minimal program that
    will properly setup the microcontroller and call the main function
+
 ## Important Notes
 
 - The `makefile` used in building many examples generates multiple file types, offering insights into different stages of the compilation pipeline.
 
-- If there is no default.ld linker file in the example/lesson directory, the linker script in the /lessons/minimal-executable is used as a base template. This script is a jumping-off point for all other linker scripts. It creates a general and well enough laid out executable file.
+- If there is no `default.ld` linker script in the example/lesson directory, the linker script in the /lessons/minimal-executable is used as a base template. This script is a jumping-off point for all other linker scripts. It creates a general and *well enough* laid out executable file.

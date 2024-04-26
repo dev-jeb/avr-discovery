@@ -1,5 +1,5 @@
 PRG            = main
-OBJ            = main.o
+OBJ            = main.o /workspaces/avr/utils/object-files/usart.o
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -63,12 +63,11 @@ CC             = avr-gcc
 AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        = -std=c99 -Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
-override LDFLAGS       = -nostdlib -nodefaultlibs  \
-                         -Wl,-T "./default.ld"                   \
-                         -Wl,--detailed-mem-usage                \
+override CFLAGS        =-Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
+override LDFLAGS       = -nostdlib -nodefaultlibs                                       \
+                         -Wl,-T "/workspaces/avr/lessons/minimal-executable/default.ld" \
+                         -Wl,--detailed-mem-usage                                       \
 						 -Wl,-Map,$(PRG).map 
-
 
 OBJCOPY        = avr-objcopy
 OBJDUMP        = avr-objdump
@@ -123,6 +122,10 @@ pdf: $(PRG).pdf
 	$(FIG2DEV) -L png $< $@
 
 size:
-	avr-size -C --radix=16 --mcu=atmega328p $(PRG)
+	avr-size -C --radix=16  --mcu=atmega328p main.elf 
 
-.Phony: all clean size
+.PHONY: clean size
+
+
+
+

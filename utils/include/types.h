@@ -11,8 +11,6 @@
  * This module will provide a way to define common types
  **/
 
-#include "types.h"
-
 // an unsigned 8-bit integer type
 typedef unsigned char uint8_t;
 

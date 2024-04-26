@@ -2,38 +2,16 @@
  * @contact_info:
  * Author: dev_jeb
  * Email: dev_jeb@outlook.com
- *
- * @usage:
- * Ensure you have successfully setup the development container described in the
- * README or ensure you have the necessary tools installed locally on you
- * machine. You can build this lesson using the `make` command
- *
+
  * @purpose:
- *
- *
- * @project_index:
- *
- * main.c: main lesson file
- *
- * makefile: the makefile for this lesson. This makefile when run with the
- * command `make` produces many different files. These files each give a
- * different view of our program at different stages of the compilation process.
- * They will be invaluable in gaining insight into the structure of our final
- * executable and the steps that were taken to produce it.
- *
- * prog.ld: the linker script (more on this later)
- *
- * prog1.c: this is a C file that will be used to show how we can compile two
- * separate files and then link them together into one executable file
- *
- * The atmega328p gives us a convenient way to trigger software interrupts.
- * We can use the INT0 pin and set it to output. Then we can trigger an
- * interrupt by setting the pin to high. This will be a good exercise
- *
+ * This lesson will show how to trigger a software interrupt on the AVR.
+ * This gives us the ability to do some interesting things down the line
  */
+
 #include "avr-arch.h"
 #include "interrupt.h"
 #include "types.h"
+
 /**
  * Remember that we defined a weak symbol (__vector_n with n being a positive
  * integer) in crt.s for all the interrupt handlers (minus reset). We can define
@@ -58,7 +36,7 @@ ISR(INT0_vect) { i_live_in_the_data_section++; }
 
 int main(void) {
   // Trigger the interrupt
-  trigger_interrupt_INT0();
+  interrupt_trigger_int0();
   return 0;
 }
 

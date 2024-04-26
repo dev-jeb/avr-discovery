@@ -30,4 +30,5 @@ $(OBJ_DIR):
 clean:
 	rm -rf $(OBJ_DIR)/*.o $(PRG)
 
+
 .PHONY: all clean
