@@ -28,10 +28,11 @@
  *
  */
 static void interrupt_prologue() {
+  // Disable global interrupts
+  cli();
   // Save the status register to a temporary variable
   uint8_t temp = SREG;
-  // Disable global interrupts
-  DISABLE(SREG, SREG7);
+  push(temp);
   // Save the state of the registers
   R2 = R0;
   R3 = R1;
@@ -45,10 +46,13 @@ static void interrupt_prologue() {
   R11 = R25;
   R12 = R26;
   R13 = R27;
-  R14 = R30 R15 = R31;
+  R14 = R30;
+  R15 = R31;
 };
 
 static void interrupt_epilogue() {
+  // disable global interrupts
+  cli();
   // Restore the state of the registers
   R0 = R2;
   R1 = R3;
@@ -65,7 +69,9 @@ static void interrupt_epilogue() {
   R30 = R14;
   R31 = R15;
   // Restore the status register
+  uint8_t temp = pop();
   SREG = temp;
+  // Enable global interrupts
 };
 
 void trigger_interrupt_INT0() {
@@ -86,10 +92,10 @@ void trigger_interrupt_INT0() {
   DISABLE(EIMSK, INT0);
   // interrupt epilogue
   interrupt_epilogue();
+  sei();
 };
 
 void trigger_interrupt_INT0_1arg(uint8_ptr_t arg1) {
-  // interrupt prologue
   interrupt_prologue();
   // Pass arg1 to interrupt handler in R17
   R16 = *arg1;

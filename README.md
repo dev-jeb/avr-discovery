@@ -45,3 +45,5 @@ linkers search path. Therefore any file in this directory can be included in any
 ## Important Notes
 
 - The `makefile` used in building many examples generates multiple file types, offering insights into different stages of the compilation pipeline.
+
+- If there is no default.ld linker file in the example/lesson directory, the linker script in the /lessons/minimal-executable is used as a base template. This script is a jumping-off point for all other linker scripts. It creates a general and well enough laid out executable file.

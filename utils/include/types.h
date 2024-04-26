@@ -2,6 +2,17 @@
 #define AVR_TYPES_H
 #endif
 
+/**
+ * @contact_info:
+ * Author: dev_jeb
+ * Email: developer_jeb@outlook.com
+ *
+ * @purpose:
+ * This module will provide a way to define common types
+ **/
+
+#include "types.h"
+
 // an unsigned 8-bit integer type
 typedef unsigned char uint8_t;
 

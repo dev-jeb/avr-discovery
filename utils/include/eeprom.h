@@ -2,6 +2,15 @@
 #define AVR_EEPROM_H
 #endif
 
+/**
+ * @contact_info:
+ * Author: dev_jeb
+ * Email: developer_jeb@outlook.com
+ *
+ * @purpose:
+ * This module will provide a way to read and write to the EEPROM on the AVR.
+ **/
+
 #include "avr-arch.h"
 #include "types.h"
 

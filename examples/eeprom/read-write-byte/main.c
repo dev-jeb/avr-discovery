@@ -13,6 +13,7 @@
  * the EEPROM functions described in `eeprom.h`.
  */
 #include "eeprom.h"
+#include "types.h"
 
 /**
  * here we are storing a byte in the EEPROM. It will be stored as the first
@@ -22,15 +23,15 @@
  */
 uint8_t EEPROM im_the_first_byte_in_eeprom = 0xCC;
 
-void main() {
+int main() {
   // we can read a byte from the EEPROM. This will read the first byte (0xCC)
-  uint8_t data = eeprom_read_byte((ptr_uint8_t)0x00);
+  uint8_t data = eeprom_read_byte((uint8_ptr_t)0x00);
   // we can write a byte to the EEPROM (0xAA)
-  eeprom_write_byte((ptr_uint8_t)0x01, 0xAA);
+  eeprom_write_byte((uint8_ptr_t)0x01, 0xAA);
   // we can read a byte from the EEPROM (0xCC)
-  data = eeprom_read_byte((ptr_uint8_t)0x00);
+  data = eeprom_read_byte((uint8_ptr_t)0x00);
   // and read (0xAA) from the EEPROM
-  data = eeprom_read_byte((ptr_uint8_t)0x01);
+  data = eeprom_read_byte((uint8_ptr_t)0x01);
   // we store 0xAA in the second general purpose register.
   R2 = data;
 }

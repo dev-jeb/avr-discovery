@@ -2,109 +2,100 @@
 #define AVR_ARCH_H
 #endif
 
+/**
+ * @contact_info:
+ * Author: dev_jeb
+ * Email: developer_jeb@outlook.com
+ *
+ * @purpose:
+ * This module will define the AVR architecture and gives us a
+ * more structured way to interact with the microcontroller.
+ **/
+
 #include "types.h"
-
-/**
- * here we will define the default clock speed of the atmega328p
- */
-#define F_CPU 8000000UL
-
-/**
- * avr defined interrupt vectors
- */
-#define INT0_vect __vector_1
-#define INT1_vect __vector_2
-#define PCINT0_vect __vector_3
-#define PCINT1_vect __vector_4
-#define PCINT2_vect __vector_5
-#define WDT_vect __vector_6
-#define TIMER2_COMPA_vect __vector_7
-#define TIMER2_COMPB_vect __vector_8
-#define TIMER2_OVF_vect __vector_9
-#define TIMER1_CAPT_vect __vector_10
-#define TIMER1_COMPA_vect __vector_11
-#define TIMER1_COMPB_vect __vector_12
-#define TIMER1_OVF_vect __vector_13
-#define TIMER0_COMPA_vect __vector_14
-#define TIMER0_COMPB_vect __vector_15
-#define TIMER0_OVF_vect __vector_16
-#define SPI_STC_vect __vector_17
-#define USART_RX_vect __vector_18
-#define USART_UDRE_vect __vector_19
-#define USART_TX_vect __vector_20
-#define ADC_vect __vector_21
-#define EE_RDY_vect __vector_22
-#define ANA_COMP_vect __vector_23
-#define TWI_vect __vector_24
-#define SPM_RDY_vect __vector_25
-
-/**
- * macro to define an interrupt service routine
- *@param vector: interrupt vector to decalre ISR for
- */
-#define ISR(vector) void vector(void)
 
 /**
  * 32 x 8 General Purpose Working Registers
  * R0-R31
  */
+
 /**
- * scratch register (need not be restored after use)
- * must store before ISR and restore after ISR
+ * scratch register. This register is used by the compiler for temporary storage
+ * therefore this value must be saved before jumping to an interrupt service
+ * routine and restored before returning from the interrupt service routine.
  */
 #define R0 *(volatile uint8_t *)0x00
 /**
  * must always be zero. Sometimes used as temporary register therefore
  * ISR must save,set 0, and restore
  **/
+// (call saved)
 #define R1 *(volatile uint8_t *)0x01
+// (call saved)
 #define R2 *(volatile uint8_t *)0x02
+// (call saved)
 #define R3 *(volatile uint8_t *)0x03
+// (call saved)
 #define R4 *(volatile uint8_t *)0x04
+// (call saved)
 #define R5 *(volatile uint8_t *)0x05
+// (call saved)
 #define R6 *(volatile uint8_t *)0x06
+// (call saved)
 #define R7 *(volatile uint8_t *)0x07
+// (call saved)
 #define R8 *(volatile uint8_t *)0x08
+// (call saved)
 #define R9 *(volatile uint8_t *)0x09
+// (call saved)
 #define R10 *(volatile uint8_t *)0x0A
+// (call saved)
 #define R11 *(volatile uint8_t *)0x0B
+// (call saved)
 #define R12 *(volatile uint8_t *)0x0C
+// (call saved)
 #define R13 *(volatile uint8_t *)0x0D
+// (call saved)
 #define R14 *(volatile uint8_t *)0x0E
+// (call saved)
 #define R15 *(volatile uint8_t *)0x0F
+// (call saved)
 #define R16 *(volatile uint8_t *)0x10
+// (Call saved)
 #define R17 *(volatile uint8_t *)0x11
-// call clobbered
+// (call clobbered)
 #define R18 *(volatile uint8_t *)0x12
-// call clobbered
+// (call clobbered)
 #define R19 *(volatile uint8_t *)0x13
-// call clobbered
+// (call clobbered)
 #define R20 *(volatile uint8_t *)0x14
-// call clobbered
+// (call clobbered)
 #define R21 *(volatile uint8_t *)0x15
-// call clobbered
+// (call clobbered)
 #define R22 *(volatile uint8_t *)0x16
-// call clobbered
+// (call clobbered)
 #define R23 *(volatile uint8_t *)0x17
-// call clobbered
+// (call clobbered)
 #define R24 *(volatile uint8_t *)0x18
-// call clobbered
+// (call clobbered)
 #define R25 *(volatile uint8_t *)0x19
-// call clobbered
 // X register low byte
+// (call clobbered)
 #define R26 *(volatile uint8_t *)0x1A
-// call clobbered
 // X register high byte
+// (call clobbered)
 #define R27 *(volatile uint8_t *)0x1B
 // Y register low byte
+// (call saved)
 #define R28 *(volatile uint8_t *)0x1C
 // Y register high byte
+// (call saved)
 #define R29 *(volatile uint8_t *)0x1D
-// call clobbered
 // Z register low byte
+// (call clobbered)
 #define R30 *(volatile uint8_t *)0x1E
-// call clobbered
 // Z register high byte
+// (call clobbered)
 #define R31 *(volatile uint8_t *)0x1F
 
 /**
@@ -123,16 +114,13 @@
 #define SREG4 4
 // half carry flag
 #define SREG5 5
-/**
- * bit copy storage
- * used like r0, a tmp register therefore must be saved before ISR and restored
- * after ISR
- */
+// Scratch bit
+// (call clobbered)
 #define SREG6 6
 // global interrupt enable
 #define SREG7 7
 
-// external interrupt control register A
+// External Interrupt Control Register A
 #define EICRA *(volatile uint8_t *)0x69
 #define ISC00 0
 #define ISC01 1
@@ -144,7 +132,7 @@
 #define INT0 0
 #define INT1 1
 
-// define the PORTD Data Register
+// PORTD Data Register
 #define PORTD *(volatile uint8_t *)0x2B
 #define PORTD0 0
 #define PORTD1 1
@@ -155,7 +143,7 @@
 #define PORTD6 6
 #define PORTD7 7
 
-// Define PORTD data direction register
+// PORTD data direction register
 #define DDRD *(volatile uint8_t *)0x2A
 #define DDD0 0
 #define DDD1 1
@@ -166,7 +154,7 @@
 #define DDD6 6
 #define DDD7 7
 
-// Define Port D Input Pins Address
+// Port D Input Pins Address
 #define PIND *(volatile uint8_t *)0x29
 #define PIND0 0
 #define PIND1 1
@@ -177,22 +165,12 @@
 #define PIND6 6
 #define PIND7 7
 
-#ifdef __cplusplus
-#define __always_inline inline __attribute__((always_inline))
-#else
-#define __always_inline static inline __attribute__((always_inline))
-#endif
+/**
+ * Here we define some inline functions.
+ */
 
+// clear the global interrupt enable bit
 __always_inline void cli() { asm volatile("cli"); }
 
+// set the global interrupt enable bit
 __always_inline void sei() { asm volatile("sei"); }
-
-__always_inline void push(uint8_t data) {
-  asm volatile("PUSH %0" : : "r"(data));
-}
-
-__always_inline uint8_t pop() {
-  uint8_t data;
-  asm volatile("POP %0" : "=r"(data));
-  return data;
-}

@@ -63,7 +63,7 @@ CC             = avr-gcc
 AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        =-Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
+override CFLAGS        = -std=c99 -Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
 override LDFLAGS       = -nostdlib -nodefaultlibs  \
                          -Wl,-T "./default.ld"                   \
                          -Wl,--detailed-mem-usage                \

@@ -1,5 +1,5 @@
-PRG            = read-write-byte
-OBJ            = read-write-byte.o
+PRG            = main
+OBJ            = main.o /workspaces/avr/utils/object-files/eeprom.o
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -53,21 +53,31 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -g
+OPTIMIZE       = -O0
 DEFS           =
-LIBS           = -I /workspaces/avr/utils/
+LIBS           = -I /workspaces/avr/utils/include         \
+				 -I /workspaces/avr/utils/object-files/     \
+				 -L /workspaces/avr/common/		          \
+				 -L /workspaces/avr/utils/object-files	  \
+				 
 # You should not have to change anything below here.
 CC             = avr-gcc
+AS 		       = avr-as
+LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        =-Wall -Wextra $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(LIBS)
-override LDFLAGS       = -Wl,-Map,$(PRG).map
+override CFLAGS        =-Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
+override LDFLAGS       = -nostdlib -nodefaultlibs                                       \
+                         -Wl,-T "/workspaces/avr/lessons/minimal-executable/default.ld" \
+                         -Wl,--detailed-mem-usage                                       \
+						 -Wl,-Map,$(PRG).map 
+
+
 OBJCOPY        = avr-objcopy
 OBJDUMP        = avr-objdump
 all: $(PRG).elf lst text eeprom
 $(PRG).elf: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-# dependency:
-demo.o: demo.c iocompat.h
+
 clean:
 	rm -rf *.o $(PRG).elf *.eps *.pdf *.bak 
 	rm -rf *.lst *.map $(EXTRA_CLEAN_FILES)
