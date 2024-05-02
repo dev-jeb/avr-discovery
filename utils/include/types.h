@@ -22,6 +22,12 @@ typedef unsigned short uint16_t;
 // an unsigned 16-bit pointer type
 typedef unsigned short *uint16_ptr_t;
 
+// an unsigned 32-bit integer type
+typedef unsigned long uint32_t;
+
+// an unsigned 32-bit pointer type
+typedef unsigned long *uint32_ptr_t;
+
 // a void pointer type
 typedef void *void_ptr_t;
 

@@ -40,8 +40,7 @@
     * we will place this section at the start of flash as is expected by the
     * hardware. This is a data structure used by the microcontroller to handle
     * interrupts. The microcontroller has a finite and defined set of interrupts.
-    * Each interrupt has an entry in the vector table. The exact structure of the 
-    * vector table is defined in the datasheet. When one of the interrupts occurs
+    * Each interrupt has an entry in the vector table. When one of the interrupts occur
     * the microcontroller will jump to the vector table and execute the command
     * at that predefined location. This happens to be a jump command to the interrupt
     * handler defined by you guessed it ... our weak symbols we have talked so much about.
@@ -57,9 +56,8 @@
     *     ...
     *    } 
     *
-    * Because the symbol __vector_1 defined by the function is a strong symbol the linker 
-    * will resolve the runtime address of the interrupt handler to point to the function 
-    * defined by the user. 
+    * Because the symbol __vector_1 defined by the function is a strong symbol, the linker 
+    * will resolve the runtime address of the interrupt handler to our function. 
     *
     * vector tables like this are used to implement the interrupt infrastructure of
     * many different microcontrollers. The implementation details will differ but the
@@ -102,9 +100,9 @@ __vectors:
     * in the vector table other then the reset vector were defined as weak symbols
     * that would be redirected to this handler if not defined by the user.
     * This handler is also defined as a weak symbol. Therefore, if the user
-    * defines __vector_default we could define what happens when an interrupt
-    * occurs that has no user defined handler. I have chosen to jump to the
-    * reset vector in the default case.
+    * defines __vector_default, they could control what happens when an interrupt
+    * occurs. Here, I make a design decision. In the default case we will jump to the 
+    * reset vector. You could do whatever you like.
     **/
     .section .bad_interrupt,"ax",@progbits
     .global __bad_interrupt
@@ -117,12 +115,14 @@ __bad_interrupt:
 
     /**
     * So on reset or bad interrupt which jumps to reset we will jump to the __init symbol. 
-    * What should we do from here? The objective of this file is to call our main function
-    * let us setup the environment that our main() function expects. 
-    * We will set the zero register (r1) to zero as is expected by the avr-gcc compiler. 
+    * What should we do from here? The objective of this file is to call our main function.
+    * Doing this means we will setup the environment that our main function expects.
+    * We will zero out the (r1) register as expected by compiler. 
     * We will also zero out the status register. We will set the stack register to 0x08FF 
-    * which is the top of the SRAM. The stack register is implemented as two 8-bit registers 
-    * in the AVR architecture. This can be seen in the datasheet.
+    * which is the top of SRAM. The stack register is implemented as (2) 8-bit registers 
+    * in the AVR architecture. This can be seen in the datasheet. That means moving the top
+    * 8 bits of the stack pointer into the high byte of the stack pointer register and the
+    * bottom 8 bits into the low byte of the stack pointer register.
     **/
     .section .init,"ax",@progbits
     .weak __init
@@ -145,6 +145,14 @@ __init:
     .global __load_data
     .func __load_data
 __load_data:
+    /**
+    * I would like to take a moment to point out the importance of what we are doing here.
+    * Registers 26-31 are used as pointer registers. You load the high byte into one. The
+    * low byte in the other (high and low specified in datasheet) and use [lpm] to access
+    * the data in flash. Notice how we increment the Z pointer with Z+. Next we store the
+    * data loaded into r0 into the SRAM pointed to by the Y pointer. This is an example of
+    * a useful addressing mode.
+    **/
     ldi r17, hi8(__data_end_sram)    ;r17     <-- high byte of (uint8_t*)__data_end_sram
     ldi r30, lo8(__data_start_flash) ;low(Z)  <-- low byte of (uint8_t*)__data_start_flash
     ldi r31, hi8(__data_start_flash) ;high(Z) <-- high byte of (uint8_t*)__data_start_flash
@@ -153,18 +161,18 @@ __load_data:
     rjmp __load_data_start
     .endfunc
     /**
-    * next we need to load the byte pointed to by the Z pointer into the register r0 and 
-    * increment the Z pointer. Then we will store the value in r0 into the SRAM pointed to
-    * by the Y pointer and increment the Y pointer.
+    * next we load a byte from flash (.data byte) at [Z pointer] into r0 and 
+    * increment Z. We will store the value [r0] into the SRAM, at location Y.
     **/
     .func __load_data_loop
 __load_data_loop:
-    lpm r0, Z+ ;load the byte pointed to by Z into r0 and increment Z
-    st Y+, r0  ;store the value in r0 into the SRAM pointed to by Y and increment Y
+    lpm r0, Z+ ;load the byte from flash
+    st Y+, r0  ;store the byte in sram
     /**
-    * next we need to check if we have reached the end of the .data section. We will do this by
-    * comparing the Z pointer to the end of the .data section. If we have not reached the end of the
-    * .data section we will loop back and load the next byte from flash into r0 and store it in SRAM. 
+    * next we need to check if we have reached the end of the .data section. We will do
+    * this by comparing the Z pointer to the end of the .data section. If we have not 
+    * reached the end of the .data section we will loop back and load the next byte from 
+    * flash into r0 and store it in SRAM. 
     **/
 __load_data_start:
     cpi  r28, lo8(__data_end_sram)
@@ -174,7 +182,8 @@ __load_data_start:
 
     /**
     * n bytes must be allocated in SRAM for the .bss where n = SIZEOF(.bss). These allocated bytes must be 
-    * initialized to zero. The .bss section contains the uninitialized global and static variables (e.g uint8_t value;). 
+    * initialized to zero. The .bss section contains the uninitialized global and static variables 
+    * (e.g uint8_t value). 
     **/
     .section .zero_bss,"aw",@progbits
     .global __zero_bss
@@ -214,14 +223,30 @@ __exit:
     .endfunc
 
     /**
+    * Here we will define the symbol used for the clock frequency. This is a global symbol
+    * that can be referenced in our C program. We could write a function that prints the
+    * clock frequency.
+    **/
+    .section .clock,"S",@progbits
+    .global __F_CPU
+__F_CPU:
+    .long 16000000
+
+
+
+    /**
     * This section is used to define the version of crt.s. We will ensure in the linker script
     * that we catch this section and include it in the final executable. This is a simple way to
     * include some version control. Notice that this is a global symbol. We can reference this
     * symbol in our C program. We could write a function that prints this version string.
     **/
     .section .crt_version,"S",@progbits
-    .global crt_version_string
+    .global __crt_version_string
 __crt_version_string:
-    .string "Version 1.0"
-    .byte 0
+    .string "Version 1.1.2"
+    .byte 0                 ;null terminator
+
+    /**
+    * Version 1.1.2: Added __F_CPU symbol to define the clock frequency.
+    **/
 
