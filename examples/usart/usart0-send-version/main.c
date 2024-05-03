@@ -39,14 +39,6 @@
  * parity bits: even parity and odd parity, each imposing a different parity
  * requirement on the transmitted data.
  *
- * From Wikipedia:
- *
- * "Parity bits are a simple form of error-detecting code. Parity bits are
- * generally applied to the smallest units of a communication protocol,
- * typically 8-bit octets (bytes). The parity bit ensures that the total number
- * of 1-bits in the string is even or odd. Accordingly, there are two variants
- * of parity bits: even parity bit and odd parity bit."
- *
  * Utilizing error checking mechanisms like parity bits enhances the reliability
  * of data transmission, as it allows the receiving end to detect and
  * potentially correct errors that may have occurred during transmission.

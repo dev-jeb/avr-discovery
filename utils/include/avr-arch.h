@@ -115,6 +115,7 @@
 #define SREG5 5
 // Scratch bit
 // (call clobbered)
+// must be saved, restored for interrupts
 #define SREG6 6
 // global interrupt enable
 #define SREG7 7
