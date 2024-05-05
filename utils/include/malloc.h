@@ -76,7 +76,6 @@
  * allocated by us. My favorite number is 3 (0000 0011).
  * BUFFER: will be used to detect out of bounds writes.
  */
-#define FLAG_ALLOCATED 0b0000 0011;
 /**
  * Notice how we have inserted a 2 byte header, 1 byte tail buffer and ((ptr
  * + size + 1) % 2) padding bytes.
