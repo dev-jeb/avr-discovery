@@ -165,14 +165,4 @@
 #define PIND6 6
 #define PIND7 7
 
-/**
- * Here we define some inline functions.
- */
-
-// clear the global interrupt enable bit
-static inline __attribute__((always_inline)) void cli() { asm volatile("cli"); }
-
-// set the global interrupt enable bit
-static inline __attribute__((always_inline)) void sei() { asm volatile("sei"); }
-
 #endif // AVR_ARCH_H

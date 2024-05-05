@@ -7,6 +7,9 @@
 # Ignore files related to development container setup
 .devcontainer
 
+# Ignore git module files
+.gitmodules
+
 # Ignore Visual Studio Code settings and workspace files
 .vscode
 

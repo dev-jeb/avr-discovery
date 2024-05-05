@@ -27,9 +27,9 @@ void panic_handler(void_ptr_t arg1) {
   // cast the void_ptr_t to a char_ptr_t
   uint8_ptr_t error_msg = (uint8_ptr_t)arg1;
   // Initialize the USART module
-  usart_init();
+  usart0_init(103);
   // send the error message over the USART module
-  usart_send_string(error_msg);
+  usart0_transmit_string(error_msg);
 }
 
 /**

@@ -63,15 +63,4 @@
  */
 void interrupt_trigger_int0();
 
-/**
- * @function:
- * trigger_interrupt_int0_a1
- *
- * @purpose:
- * trigger the INT0 interrupt to act as a software interrupt
- *
- * @param arg1: uint8_ptr_t, can be used to pass a flag or data to the ISR
- */
-void interrupt_trigger_int0_a1(uint8_ptr_t arg1);
-
 #endif // AVR_INTERRUPT_H

@@ -29,7 +29,7 @@
  */
 static void interrupt_prologue() {
   // Disable global interrupts
-  cli();
+  asm volatile("cli");
   // Save the status register to a temporary variable
   R16 = SREG;
   // Save the state of the registers
@@ -53,7 +53,7 @@ static void interrupt_prologue() {
 
 static void interrupt_epilogue() {
   // disable global interrupts
-  cli();
+  asm volatile("cli");
   // Restore the state of the registers
   R0 = R2;
   R1 = R3;
@@ -78,7 +78,7 @@ void trigger_interrupt_INT0() {
   // interrupt prologue
   interrupt_prologue();
   // Enable global interrupts
-  sei();
+  asm volatile("sei");
   // set PD2 as output
   ENABLE(DDRD, DDD2);
   // Enable INT0 interrupt
@@ -92,26 +92,6 @@ void trigger_interrupt_INT0() {
   DISABLE(EIMSK, INT0);
   // interrupt epilogue
   interrupt_epilogue();
-  sei();
-};
-
-void trigger_interrupt_INT0_1arg(uint8_ptr_t arg1) {
-  interrupt_prologue();
-  // Pass arg1 to interrupt handler in R17
-  R16 = *arg1;
-  // Enable global interrupts
-  sei();
-  // set PD2 as output
-  ENABLE(DDRD, DDD2);
-  // Enable INT0 interrupt
-  ENABLE(EIMSK, INT0);
-  // Set INT0 to trigger on toggle
-  ENABLE(EICRA, ISC00);
-  DISABLE(EICRA, ISC01);
-  // Toggle PD2 pin
-  TOGGLE(PORTD, PORTD2);
-  // Disable INT0 interrupt
-  DISABLE(EIMSK, INT0);
-  // interrupt epilogue
-  interrupt_epilogue();
+  // enable global interrupts
+  asm volatile("sei");
 };
