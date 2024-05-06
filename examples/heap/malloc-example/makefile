@@ -1,5 +1,10 @@
 PRG            = main
-OBJ            = main.o
+OBJ            = main.o \
+				 /workspaces/avr/utils/object-files/usart.o \
+				/workspaces/avr/utils/object-files/panic.o  \
+				/workspaces/avr/utils/object-files/panic.o  \
+				/workspaces/avr/utils/object-files/malloc.o  \
+
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -63,9 +68,9 @@ CC             = avr-gcc
 AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        = -std=c99 -Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
+override CFLAGS        =  -Wall -Wextra -g $(OPTIMIZE) $(LIBS)
 override LDFLAGS       = -nostdlib -nodefaultlibs                                       \
-                         -Wl,-T "/workspaces/avr/lessons/minimal-executable/default.ld" \
+                         -Wl,-T "./default.ld" \
                          -Wl,--detailed-mem-usage                                       \
 						 -Wl,-Map,$(PRG).map 
 
