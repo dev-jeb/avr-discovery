@@ -244,7 +244,6 @@ __F_CPU:
     .global __crt_version_string
 __crt_version_string:
     .string "Version 1.1.2"
-    .byte 0                 ;null terminator
 
     /**
     * Version 1.1.2: Added __F_CPU symbol to define the clock frequency.

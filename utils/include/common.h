@@ -11,6 +11,18 @@
  **/
 
 /**
+ * Define a function that return the length of a null terminated string
+ */
+#define STRLEN(string)                                                         \
+  ({                                                                           \
+    uint32_t length = 0;                                                       \
+    while (string[length] != '\0') {                                           \
+      length++;                                                                \
+    }                                                                          \
+    length;                                                                    \
+  })
+
+/**
  * Define some useful macros that operate on individual bits
  * in a register.
  */
