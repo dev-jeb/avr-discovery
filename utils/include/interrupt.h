@@ -9,7 +9,8 @@
  * @purpose:
  * This module will provide a way to trigger software interrupts on the AVR.
  *Will build out to facilitate other interrupts as needed.
- **/
+ */
+
 #include "types.h"
 
 /**

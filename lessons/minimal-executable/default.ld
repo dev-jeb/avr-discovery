@@ -104,6 +104,7 @@ SECTIONS
         * that lives only in flash.
         **/
         *(.rodata)
+        *(.rodata.*)
         KEEP(*(.rodata))
 
         /**

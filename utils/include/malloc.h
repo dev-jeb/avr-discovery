@@ -17,7 +17,7 @@
  * such as out of bounds writes, double frees, and memory leaks. We will do this
  * at the cost of space in SRAM. However, we will try to minimize the memory
  * overhead.
- * */
+ */
 
 #include "types.h"
 

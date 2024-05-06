@@ -1,4 +1,4 @@
-PRG            = main
+PRG            = main.elf
 OBJ            = main.o
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333

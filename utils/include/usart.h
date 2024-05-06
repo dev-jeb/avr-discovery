@@ -23,7 +23,12 @@
  * UBRRnH:L register to set the baud rate. Here we default to 9600 baud rate
  * assuming the system clock frequency is 16MHz. From the datasheet UBRRnH:L =
  * 103
- *
+ */
+
+#include "avr-arch.h"
+#include "types.h"
+
+/**
  * @knowledge:
  * Asynchronous Serial Communication (UART) Overview:
  *
@@ -47,8 +52,6 @@
  * agreed-upon baud rate, allowing effective communication even without
  * synchronized clocks.
  **/
-
-#include "types.h"
 
 /**
  * Here are some macros that will be useful when working with the USART module.
@@ -115,5 +118,11 @@ void usart0_transmit_string(uint8_ptr_t data);
  * Transmit the version of the crt.s used to compile the program.
  */
 void usart0_transmit_version(void);
+
+/**
+ * @function:
+ *
+ */
+void usart0_transmit_bytes(uint8_ptr_t buf, uint16_t sz);
 
 #endif // AVR_USART_H
