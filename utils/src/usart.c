@@ -1,5 +1,6 @@
 #include "usart.h"
 #include "avr-arch.h"
+#include "common.h"
 #include "types.h"
 
 void usart0_init(uint16_t ubrr_register_value) {
@@ -20,20 +21,8 @@ void usart0_transmit_byte(uint8_t data) {
   UDR0 = data;
 }
 
-void usart0_transmit_string(uint8_ptr_t data) {
-  while (*data != '\0') {
-    usart0_transmit_byte(*data);
-    data += 1;
-  }
-}
-
-void usart0_transmit_version(void) {
-  extern uint8_t __crt_version_string;
-  usart0_transmit_string((uint8_ptr_t)&__crt_version_string);
-}
-
 void usart0_transmit_bytes(uint8_ptr_t buf, uint16_t sz) {
-  for (uint16_t i = 0; i < sz; i++) {
+  for (uint16_t i = 0; i <= sz; i++) {
     usart0_transmit_byte(buf[i]);
   }
 };

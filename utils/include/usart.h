@@ -62,15 +62,6 @@
 #define TAB '\t'
 
 /**
- * @macro:
- * USART0_CLEAR_SCREEN
- *
- * @purpose:
- * This function will clear the screen of the terminal.
- */
-#define USART0_CLEAR_SCREEN usart0_transmit_string((uint8_ptr_t) "\033[2J")
-
-/**
  * @function:
  * usart_init
  *
@@ -121,6 +112,12 @@ void usart0_transmit_version(void);
 
 /**
  * @function:
+ *
+ * @purpose:
+ * Asynchronously sz bytes async.
+ *
+ * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
+ * @param: uint16_t sz (size of the buffer)
  *
  */
 void usart0_transmit_bytes(uint8_ptr_t buf, uint16_t sz);

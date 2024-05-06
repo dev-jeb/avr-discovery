@@ -106,6 +106,19 @@ int malloc(uint16_t size, uint8_ptr_ptr_t ptr, uint16_t line);
  *
  * @param ptr: Pointer to the memory block to be deallocated.
  */
-void free(uint8_ptr_t ptr);
+int free(uint8_ptr_t ptr);
+
+/**
+ * @function:
+ * get_errno
+ *
+ * @purpose:
+ * This function will return a string representation of the error number that
+ * caused the last error.
+ *
+ * @return:
+ * uint8_ptr_t: The error number that caused the last error.
+ */
+uint8_ptr_t get_errno();
 
 #endif // AVR__ALLOC_H

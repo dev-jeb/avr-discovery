@@ -5,6 +5,25 @@
 
 /**
  * @implementation_details:
+ * This will be the error number that we will use to indicate the error that
+ * occured in the malloc implementation. When a function in this module returns
+ * -1, we will set this variable to the appropriate error number.
+ *
+ * Error Definitions:
+ * 0: No error (Initial value)
+ * 1: Memory allocation failed
+ * 2: Tried to free
+ */
+static enum ERRNO_VALUE {
+  NO_ERROR = 0,
+  MEMORY_ALLOCATION_FAILED,
+  ATTEMPTED_FREE_UNALLOCATED_BLOCK,
+  DOUBLE_FREE
+};
+static enum ERRNO_VALUE ERNO = NO_ERROR;
+
+/**
+ * @implementation_details:
  * __HEAP_START is a symbol defined in the custom linker script used throughout
  * this project. It is the address of the first byte after the bss section in
  * sram. Remember, after the data and bss sections that our main program
@@ -33,25 +52,6 @@ static uint16_t ACTIVE_MASK = 0x08;
 static uint16_t ACTIVE_SHIFT = 3;
 static uint16_t SIZE_MASK = 0xffe0;
 static uint16_t SIZE_SHIFT = 5;
-
-/**
- * @implementation_details:
- * before we begin implemntation of malloc I would like make use of the
- * panic module to help us debug our malloc implementation. The function
- * provided by the module... panic() expects a function pointer to a
- * function that takes a void_ptr_t as an argument. This will allow us to
- * define whatever panic handler we want.
- *
- * Here we will transmit an error message to the host via serial.
- */
-static void panic_handler(void_ptr_t arg1) {
-  // cast the void_ptr_t to a char_ptr_t
-  uint8_ptr_t error_msg = (uint8_ptr_t)arg1;
-  // Initialize the USART module
-  usart0_init(103);
-  // send the error message over the USART module
-  usart0_transmit_string(error_msg);
-}
 
 /**
  * @function:
@@ -137,7 +137,6 @@ static void check_stack_heap_collision() {
   // collision
   if (stack_pointer < (uint16_t)__HEAP_END + buffer) {
     uint8_t error_msg[20] = "Stack/Heap collision";
-    panic(panic_handler, (void_ptr_t)error_msg);
   }
 }
 
@@ -197,12 +196,6 @@ static void initialize_block(uint8_ptr_t block, uint16_t size) {
 int malloc(uint16_t size, uint8_ptr_ptr_t ptr, uint16_t line) {
   // if size is 0 we will panic
   if (size == 0) {
-    uint8_t start_msg[16] = "Error on line 0x";
-    uint8_t line_number[2];
-    line_number[0] = (uint8_t)line >> 8;
-    line_number[1] = (uint8_t)line;
-    uint8_t error_msg[18] = ": malloc size is 0";
-    panic(panic_handler, (void_ptr_t)&line_number);
     return -1;
   }
 
@@ -238,19 +231,44 @@ int malloc(uint16_t size, uint8_ptr_ptr_t ptr, uint16_t line) {
  * This function will free the block pointed to by ptr. It will set the active
  * flag to 0.
  */
-void free(uint8_ptr_t ptr) {
+int free(uint8_ptr_t ptr) {
   // ensure no stack/heap collision has occured
   check_stack_heap_collision();
   // get the header
   uint16_ptr_t header = (uint16_ptr_t)(ptr - 2);
   if (!allocated_block(ptr)) {
-    uint8_t error_msg[20] = "Block not allocated";
-    panic(panic_handler, (void_ptr_t)error_msg);
+    ERNO = ATTEMPTED_FREE_UNALLOCATED_BLOCK;
+    return -1;
+
   } else if (!active_block(ptr)) {
-    uint8_t error_msg[16] = "double free";
-    panic(panic_handler, (void_ptr_t)error_msg);
+    ERNO = DOUBLE_FREE;
+    return -1;
+
   } else {
     // set the active flag to 0
-    *header &= ~(1 << ACTIVE_SHIFT);
+    *(uint16_ptr_t)(ptr - 2) &= ~(1 << ACTIVE_SHIFT);
   }
+  return 0;
+}
+
+/**
+ * @function:
+ * get_errno
+ * @arguments: void
+ * @return: enum ERRNO_VALUE
+ * @description:
+ * will return a string representation of the error number.
+ */
+uint8_ptr_t get_errno() {
+  switch (ERNO) {
+  case NO_ERROR:
+    return (uint8_ptr_t) "No error";
+  case MEMORY_ALLOCATION_FAILED:
+    return (uint8_ptr_t) "Memory allocation failed";
+  case ATTEMPTED_FREE_UNALLOCATED_BLOCK:
+    return (uint8_ptr_t) "Attempted to free unallocated block";
+  case DOUBLE_FREE:
+    return (uint8_ptr_t) "Double free";
+  }
+  return (uint8_ptr_t) "Unknown error";
 }
