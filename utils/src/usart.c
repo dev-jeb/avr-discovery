@@ -25,3 +25,8 @@ void usart0_transmit_string(uint8_ptr_t data) {
     usart0_transmit_byte(*data++);
   }
 }
+
+void usart0_transmit_version(void) {
+  extern uint8_t __crt_version_string;
+  usart0_transmit_string((uint8_ptr_t)&__crt_version_string);
+}

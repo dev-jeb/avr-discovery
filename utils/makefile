@@ -12,6 +12,8 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 # Compiler settings
 CC := avr-gcc
+# DO NOT change the optimization level, the usart module breaks when 
+# I tried to change it to -O0 and I dont know why
 CFLAGS := -Wall -g -Wextra -Os -mmcu=atmega328p -I$(INCLUDE_DIR)
 
 # Main target

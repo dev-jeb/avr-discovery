@@ -48,98 +48,24 @@
  * synchronized clocks.
  **/
 
-#include "avr-arch.h"
 #include "types.h"
 
-// Power Reduction Register
-// ensure USART0 is not powered down
-#define PRR *(volatile uint8_t *)0x64
-#define PRUSART0 1
+/**
+ * Here are some macros that will be useful when working with the USART module.
+ * Such as sending special characters.
+ */
+#define NEW_LINE '\n'
+#define CARRIAGE_RETURN '\r'
+#define TAB '\t'
 
 /**
- * USART I/O Data Register
- * The USART Transmit Data Buffer Register and USART Receive Data Buffer
- * Registers share the same I/O address referred to as USART Data Register or
- * UDRn. The Transmit Data Buffer Register (TXB) will be the destination for
- * data written to the UDRn Register location. Reading the UDRn Register
- * location will return the contents of the Receive Data Buffer Register (RXB)
+ * @macro:
+ * USART0_CLEAR_SCREEN
+ *
+ * @purpose:
+ * This function will clear the screen of the terminal.
  */
-#define UDR0 *(volatile uint8_t *)0xC6
-
-// Baud Rate Register High
-#define UBRR0H *(volatile uint8_t *)0xC5
-// Baud Rate Register Low
-#define UBRR0L *(volatile uint8_t *)0xC4
-
-/**
- * USART Control and Status Register 0 A
- */
-#define UCSR0A *(volatile uint8_t *)0xC0
-// Multi-processor Communication Mode
-#define MPCM0 0
-// Double the USART Transmission Speed
-#define U2X0 1
-// USART Parity Error
-// always set this bit to zero if you are writing to this register
-#define UPE0 2
-// Data OverRun
-// always set this bit to zero if you are writing to this register
-#define DOR0 3
-// Frame Error
-// always set this bit to zero if you are writing to this register
-#define FE0 4
-// USART Data Register Empty
-#define UDRE0 5
-// USART Transmit Complete
-#define TXC0 6
-// USART Receive Complete
-#define RXC0 7
-
-/**
- * USART Control and Status Register 0 B
- */
-#define UCSR0B *(volatile uint8_t *)0xC1
-// Transmit Data Bit 8
-// this is the ninth bit of the received character when using 9-bit data
-#define TXB80 0
-// Receive Data Bit 8
-// this is the ninth bit of the received character when using 9-bit data
-#define RXB80 1
-// Character Size
-// the UCSZn2 bits combined with the UCSZn1:0 bit in UCSRnC sets the number of
-// data bits (Character SiZe) in a frame the Receiver and Transmitter use.
-#define UCSZ02 2
-// Transmitter Enable
-#define TXEN0 3
-// Receiver Enable
-#define RXEN0 4
-// USART Data Register Empty Interrupt Enable
-#define UDRIE0 5
-// TX Complete Interrupt Enable
-#define TXCIE0 6
-// RX Complete Interrupt Enable
-#define RXCIE0 7
-
-/**
- * USART Control and Status Register 0 C
- */
-#define UCSR0C *(volatile uint8_t *)0xC2
-// Clock Polarity
-// This bit is used for synchronous mode only. Write this bit to zero when
-// asynchronous mode is used. The UCPOLn bit sets the relationship between data
-// output change and data input sample, and the synchronous clock (XCKn)
-#define UCPOL0 0
-// Character Size
-#define UCSZ00 1
-#define UCSZ01 2
-// Stop Bit Select
-#define USBS0 3
-// Parity Mode
-#define UPM00 4
-#define UPM01 5
-// USART Mode Select
-#define UMSEL00 6
-#define UMSEL01 7
+#define USART0_CLEAR_SCREEN usart0_transmit_string((uint8_ptr_t) "\033[2J")
 
 /**
  * @function:
@@ -180,5 +106,14 @@ void usart0_transmit_byte(uint8_t data);
  * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
  */
 void usart0_transmit_string(uint8_ptr_t data);
+
+/**
+ * @function:
+ * usart0_transmit_version
+ *
+ * @purpose:
+ * Transmit the version of the crt.s used to compile the program.
+ */
+void usart0_transmit_version(void);
 
 #endif // AVR_USART_H
