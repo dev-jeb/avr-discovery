@@ -14,6 +14,4 @@
 void panic(void (*func)(void_ptr_t), void_ptr_t arg1) {
   // call user defined function with the passed argument
   func(arg1);
-  // jump to __exit label
-  asm volatile("jmp __exit");
 };

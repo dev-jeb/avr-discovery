@@ -23,7 +23,12 @@
  * UBRRnH:L register to set the baud rate. Here we default to 9600 baud rate
  * assuming the system clock frequency is 16MHz. From the datasheet UBRRnH:L =
  * 103
- *
+ */
+
+#include "avr-arch.h"
+#include "types.h"
+
+/**
  * @knowledge:
  * Asynchronous Serial Communication (UART) Overview:
  *
@@ -48,8 +53,6 @@
  * synchronized clocks.
  **/
 
-#include "types.h"
-
 /**
  * Here are some macros that will be useful when working with the USART module.
  * Such as sending special characters.
@@ -57,15 +60,6 @@
 #define NEW_LINE '\n'
 #define CARRIAGE_RETURN '\r'
 #define TAB '\t'
-
-/**
- * @macro:
- * USART0_CLEAR_SCREEN
- *
- * @purpose:
- * This function will clear the screen of the terminal.
- */
-#define USART0_CLEAR_SCREEN usart0_transmit_string((uint8_ptr_t) "\033[2J")
 
 /**
  * @function:
@@ -115,5 +109,17 @@ void usart0_transmit_string(uint8_ptr_t data);
  * Transmit the version of the crt.s used to compile the program.
  */
 void usart0_transmit_version(void);
+
+/**
+ * @function:
+ *
+ * @purpose:
+ * Asynchronously sz bytes async.
+ *
+ * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
+ * @param: uint16_t sz (size of the buffer)
+ *
+ */
+void usart0_transmit_bytes(uint8_ptr_t buf, uint16_t sz);
 
 #endif // AVR_USART_H

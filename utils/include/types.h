@@ -8,7 +8,7 @@
  *
  * @purpose:
  * This module will provide a way to define common types
- **/
+ */
 
 // an unsigned 8-bit integer type
 typedef unsigned char uint8_t;

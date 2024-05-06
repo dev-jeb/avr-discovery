@@ -11,6 +11,7 @@
  * transparency to the microcontroller's state. The idea is to call panic when a
  * bad state has occurred and serially transmit the error message to a host
  */
+
 #include "types.h"
 
 /**

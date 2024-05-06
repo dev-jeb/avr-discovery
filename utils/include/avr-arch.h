@@ -98,6 +98,14 @@
 #define R31 *(volatile uint8_t *)0x1F
 
 /**
+ * Stack Pointer
+ */
+// stack pointer high byte
+#define SPH *(volatile uint8_t *)0x3e
+// stack pointer low byte
+#define SPL *(volatile uint8_t *)0x3d
+
+/**
  * Status Register
  */
 #define SREG *(volatile uint8_t *)0x5F
