@@ -59,7 +59,6 @@
  */
 #define NEW_LINE '\n'
 #define CARRIAGE_RETURN '\r'
-#define TAB '\t'
 
 /**
  * @function:
@@ -77,7 +76,16 @@
  * The RXCn flag can be used to check that there is no unread data in
  * the receive buffer.
  */
-void usart0_init(uint16_t ubrr_regiser_value);
+#define usart0_init(ubrr_register_value)                                       \
+  {                                                                            \
+    /*Set baud rate */                                                         \
+    UBRR0H = (uint8_t)(ubrr_register_value >> 8);                              \
+    UBRR0L = (uint8_t)ubrr_register_value;                                     \
+    /* Enable transmitter */                                                   \
+    UCSR0B = (1 << TXEN0);                                                     \
+    /* Set frame format: 8data, 2stop bit, no parity */                        \
+    UCSR0C = (1 << USBS0) | (3 << UCSZ00);                                     \
+  }
 
 /**
  * @function:
@@ -89,17 +97,6 @@ void usart0_init(uint16_t ubrr_regiser_value);
  * @param: uint8_t data (byte to be serially transmitted)
  */
 void usart0_transmit_byte(uint8_t data);
-
-/**
- * @function:
- * usart_send_string
- *
- * @purpose:
- * Asynchronously transmit a  null terminated string over the USART module.
- *
- * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
- */
-void usart0_transmit_string(uint8_ptr_t data);
 
 /**
  * @function:
