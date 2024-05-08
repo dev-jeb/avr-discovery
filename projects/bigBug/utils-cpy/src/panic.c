@@ -11,7 +11,7 @@
  * @params: arg1 - a void_ptr_t that will be passed to the user defined panic
  * function.
  */
-void panic(void (*func)(void_ptr_t), void_ptr_t arg1) {
+void panic(void (*func)(void_ptr_t, uint16_t), void_ptr_t msg, uint16_t line) {
   // call user defined function with the passed argument
-  func(arg1);
+  func(msg, line);
 };
