@@ -1,9 +1,6 @@
 PRG            = main
 OBJ            = main.o \
-				 /workspaces/avr/utils/object-files/usart.o \
-				/workspaces/avr/utils/object-files/panic.o  \
-				/workspaces/avr/utils/object-files/panic.o  \
-				/workspaces/avr/utils/object-files/malloc.o  \
+                 /workspaces/avr/projects/bigBug/utils-cpy/object-files/common.o \
 
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
@@ -58,10 +55,13 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -O0
+
+# If optimization flag != -0s you will break the usart implementation I have no idea why, maybe a manifestation of the bug I am currently documenting
+OPTIMIZE       = -Os
 DEFS           =
-LIBS           = -I /workspaces/avr/utils/include \
-				 -L /workspaces/avr/common/
+LIBS           = -L /workspaces/avr/common/ \
+                 -I /workspaces/avr/projects/bigBug/utils-cpy/include 
+                 
 				 
 # You should not have to change anything below here.
 CC             = avr-gcc

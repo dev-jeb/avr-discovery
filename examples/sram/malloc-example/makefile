@@ -1,5 +1,9 @@
 PRG            = main
 OBJ            = main.o \
+				 /workspaces/avr/utils/object-files/usart.o \
+				/workspaces/avr/utils/object-files/panic.o  \
+				/workspaces/avr/utils/object-files/panic.o  \
+				/workspaces/avr/utils/object-files/malloc.o  \
 				/workspaces/avr/utils/object-files/common.o  \
 
 #MCU_TARGET     = at90s2313
@@ -55,7 +59,7 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -Os
+OPTIMIZE       = -O0
 DEFS           =
 LIBS           = -I /workspaces/avr/utils/include \
 				 -L /workspaces/avr/common/
