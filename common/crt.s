@@ -134,6 +134,7 @@ __init:
     out 0x3E, r28 ;set stack pointer high byte
     ldi r28, 0xFF
     out 0x3D, r28 ;set stack pointer low byte
+    rjmp __load_data
     .endfunc
 
     /**
@@ -200,6 +201,7 @@ __zero_bss_loop:
     st Z+, r0                      ;store zero in the SRAM pointed to by Z and increment Z
     jmp __zero_bss_loop            ;loop back
 __zero_bss_end:
+    rjmp __call_main               ;jump to the main function
     .endfunc
 
     /**
@@ -214,6 +216,7 @@ __call_main:
     sei          ;enable interrupts
     call main    ;call the main function
     cli          ;disable interrupts
+    rjmp __exit   ;jump to the exit function
     .endfunc
 
     .global __exit
@@ -221,18 +224,6 @@ __call_main:
 __exit:
     jmp __exit   ;loop after main return
     .endfunc
-
-    /**
-    * Here we will define the symbol used for the clock frequency. This is a global symbol
-    * that can be referenced in our C program. We could write a function that prints the
-    * clock frequency.
-    **/
-    .section .clock,"S",@progbits
-    .global __F_CPU
-__F_CPU:
-    .long 16000000
-
-
 
     /**
     * This section is used to define the version of crt.s. We will ensure in the linker script
@@ -243,10 +234,12 @@ __F_CPU:
     .section .crt_version,"S",@progbits
     .global __crt_version_string
 __crt_version_string:
-    .string "Version 1.1.2"
-    .byte 0                 ;null terminator
+    .string "Version 1.1.3"
 
     /**
     * Version 1.1.2: Added __F_CPU symbol to define the clock frequency.
+    * Version 1.1.3: Removed __F_CPU symbol. Fixed all hanging functions. 
+    * hanging defined as relied on placment in executable to ensure proper
+    * program flow. Now all functions explicitly call the next function.
     **/
 
