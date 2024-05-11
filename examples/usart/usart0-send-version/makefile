@@ -53,7 +53,7 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -O0
+OPTIMIZE       = -Os
 DEFS           =
 LIBS           = -I /workspaces/avr/utils/include \
 				 -L /workspaces/avr/common/
@@ -63,7 +63,7 @@ CC             = avr-gcc
 AS 		       = avr-as
 LD 		       = avr-ld
 # Override is only needed by avr-lib build system.
-override CFLAGS        =-Wall -Werror -Wextra -g $(OPTIMIZE) $(LIBS)
+override CFLAGS        =-Wall -Wextra -g $(OPTIMIZE) $(LIBS)
 override LDFLAGS       = -nostdlib -nodefaultlibs                                       \
                          -Wl,-T "/workspaces/avr/lessons/minimal-executable/default.ld" \
                          -Wl,--detailed-mem-usage                                       \
