@@ -234,7 +234,10 @@ __exit:
     .section .crt_version,"S",@progbits
     .global __crt_version_string
 __crt_version_string:
-    .string "Version 1.1.3"
+    .string  "Version 1.1.3"
+    .byte(0)
+    
+
 
     /**
     * Version 1.1.2: Added __F_CPU symbol to define the clock frequency.

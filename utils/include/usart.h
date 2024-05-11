@@ -14,13 +14,9 @@
  *
  * @important_notes:
  * when using the USART module, it is up to you to do the following:
+ * 1. determine the clock frequency of your controller. (Here I use 16MHz)
  * 1. Use the table in the datasheet to determine the value to be written to the
- * UBRRnH:L register to set the baud rate. Here we default to 9600 baud rate
- * assuming the system clock frequency is 16MHz. From the datasheet UBRRnH:L =
- * 103. Pass the determined value to the usart0_init macro.
- *
- * @bugs: This module has a known bug. See /projects/bigBug/main.c for more
- * information.
+ * UBRRnH:L register. Here is is 103
  */
 
 #include "avr-arch.h"
@@ -37,29 +33,19 @@
  * UART Transmission Process:
  * 1. Start Bit: Communication begins with a start bit (always low).
  * 2. Data Bits: The actual data (usually 8 bits) are sent after the start bit.
- * 3. Stop Bit(s): One or more stop bits follow the data bits, indicating the
- * end of the byte.
- * 4. Optional Parity Bit: Can be added for error checking (odd or even parity).
- *
- * Baud Rate: Determines the speed of transmission, indicating the number of
- * bits transmitted per second. Both devices must use the same baud rate for
- * successful communication.
- *
- * Asynchronous Nature: There's no shared clock signal; the receiving device
- * synchronizes its internal clock with the incoming data based on the
- * agreed-upon baud rate, allowing effective communication even without
- * synchronized clocks.
+ * 3. Optional Parity Bit: Can be added for error checking (odd or even parity).
+ * 4. Stop Bit(s): One or more stop bits follow the data bits, indicating the
+ *    end of the byte.
  **/
 
-/**
- * Here are some macros that will be useful when working with the USART module.
- * Such as sending special characters.
- */
 #define NEW_LINE '\n'
 #define CARRIAGE_RETURN '\r'
+// !!this is not a uint8_t!!
+// use usartn_transmit_bytes(&CLEAR_SCREEN)
+#define CLEAR_SCREEN "\033[2J"
 
 /**
- * @macro:
+ * @function:
  * usart_init
  *
  * @purpose:
@@ -73,53 +59,27 @@
  *
  * The RXCn flag can be used to check that there is no unread data in
  * the receive buffer.
- */
-#define usart0_init(ubrr_register_value)                                       \
-  {                                                                            \
-    /*Set baud rate */                                                         \
-    UBRR0H = (uint8_t)(ubrr_register_value >> 8);                              \
-    UBRR0L = (uint8_t)ubrr_register_value;                                     \
-    /* Enable transmitter */                                                   \
-    UCSR0B = (1 << TXEN0);                                                     \
-    /* Set frame format: 8data, 2stop bit, no parity */                        \
-    UCSR0C = (1 << USBS0) | (3 << UCSZ00);                                     \
-  }
+ **/
+void usart0_init(uint16_t ubrr_register_value);
 
 /**
- * @macro:
+ * @function:
  * usart0_transmit_byte
  * @purpose:
  * Asynchronously transmit a byte over the USART0 module.
- * @param: uint8_t data (byte to be serially transmitted)
+ * @param: byte to transmit
  */
-#define usart0_transmit_byte(data)                                             \
-  {                                                                            \
-    /* wait for the data buffer to be empty */                                 \
-    while (!(UCSR0A & (1 << UDRE0))) {                                         \
-    };                                                                         \
-    /* Put data into buffer, sends the data */                                 \
-    UDR0 = (uint8_t)data;                                                      \
-  }
+void usart0_transmit_byte(uint8_t ptr);
 
 /**
- * @macro:
+ * @function:
  * usart0_transmit_bytes
  * @purpose:
- * Asynchronously transmit a string over the USART0 module.
- * @param: uint8_ptr_t *data (pointer to the string to be serially transmitted)
- * @param: uint16_t sz (size of the buffer)
- * @note: This function has a known bug. See /projects/bigBug/main.c for more
- * information.
+ * Asynchronously transmit a null terminated sequence of bytes over the USART0
+ * module.
+ * @param: pointer to data
+ * @note: undefined behaviour when terminator not present
  */
-#define usart0_transmit_bytes(data, sz)                                        \
-  {                                                                            \
-    for (uint32_t i = 0; i < sz; i++) {                                        \
-      /* wait for the data buffer to be empty */                               \
-      while (!(UCSR0A & (1 << UDRE0))) {                                       \
-      };                                                                       \
-      /* Put data into buffer, sends the data */                               \
-      UDR0 = *(data + i);                                                      \
-    }                                                                          \
-  }
+void usart0_transmit_bytes(uint8_ptr_t ptr);
 
 #endif // AVR_USART_H
