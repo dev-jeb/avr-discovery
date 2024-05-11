@@ -27,7 +27,7 @@ linkers search path. Therefore any file in this directory can be included in any
 ```
 **THIS HAS IMMEDIATE IMPLICATIONS FOR THE USE OF THE USART MODULE**
 ```
-- There is a documented bug with the usart module. Please see `/projects/bigBug` for more information. 
+- If you compile an executable that uses the usart module the optimization level must be set to -Os. Undefined behavior otherwise.
 
 
 

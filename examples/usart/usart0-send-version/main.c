@@ -37,7 +37,10 @@
  * The command below can be used to see the configured baud rate and the format
  * of the data being sent.
  *
- * >> simavr -v -v -v -f <clock_freq> -m atmega328p -t <executable>
+ * >> simavr -v -v -v -f 16000000 -m atmega328p -t main.elf
+ *
+ * @bug: when compiling an executable with the USART module, the optimization
+ * level must be set to -Os. If not it is undefined behavior.
  */
 
 #include "types.h"

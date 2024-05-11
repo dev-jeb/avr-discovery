@@ -1,4 +1,10 @@
 /**
+ * @note: This bug has been fixed! I will leave everything in this file the way
+ * that it is, the only thing I will do is add a switch example that shows the
+ * fix.
+ */
+
+/**
  * @contact_info:
  * Author: dev_jeb
  * Email: developer_jeb@outlook.com
@@ -17,7 +23,8 @@
  *
  * - Notice that I have included a copy of the utils folder in this project. I
  * may have found a solution to this problem that will involve changing utils.
- * This directory contains everything needed to reproduce this bug.
+ * This directory contains everything needed to reproduce this bug at the
+ * current state.
  *
  * - This bug was compiled using the avr-gcc compiler version 5.4.0.
  */
@@ -39,8 +46,7 @@
  * strlen(str_ptr) it loops forever.
  *
  * When SWITCH == 1 the program loops forever. I have distilled it down to the
- * call to strlen on the ptr. At the end of this file I will tell you how to
- * reproduce this error.
+ * call to strlen on the ptr.
  *
  * When SWITCH == 2 the usart modeule acts as expected.
  *
@@ -92,6 +98,22 @@ int main(void) {
   foo();
   return 0;
 }
+
+#elif SWITCH == 3
+
+/**
+ * The bug lies in the implementation of the strlen function. When we get the
+ * length of the string we use the syntactic sugar str++ which expands to
+ * str = str + 1. Therefore we are actually changing and reassiging the pointer.
+ * If we wanted to print the string twice we would call strtlen() twice. The
+ * second time we call it the pointer is pointing to the end of the string. We
+ * get an infinite loop. This is the same reason that SWITCH == 1 fails if we
+ * didnt use the constant 11. The fix would be to add an index variable to keep
+ * track of how faw we have gone. We no longer use strlen in the usart module.
+ * However, this is what the fixed usart implementation looks like.
+ *
+ * void usart0_transmit_bytes(uint8_ptr_t str {
+ */
 
 #endif
 

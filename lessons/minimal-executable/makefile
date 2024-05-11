@@ -53,7 +53,7 @@ MCU_TARGET	 	= atmega328p
 #MCU_TARGET     = attiny84
 #MCU_TARGET     = attiny85
 #MCU_TARGET     = attiny861
-OPTIMIZE       = -O0
+OPTIMIZE       = -Os
 DEFS           =
 LIBS           = -I /workspaces/avr/utils/include \
 				 -L /workspaces/avr/common/
