@@ -16,6 +16,12 @@ typedef unsigned char uint8_t;
 // an unsigned 8-bit pointer type
 typedef uint8_t *uint8_ptr_t;
 
+// a signed 8-bit integer type
+typedef signed char int8_t;
+
+// a signed 8-bit pointer type
+typedef signed char *int8_ptr_t;
+
 // an unsigned 16-bit integer type
 typedef unsigned short uint16_t;
 

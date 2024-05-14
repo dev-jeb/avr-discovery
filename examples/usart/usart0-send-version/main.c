@@ -7,13 +7,6 @@
  * Here we will use the universal synchronous and asynchronous receiver and
  * transmitter (USART) to transmit a character to another computer.
  *
- * @usage:
- * I will note here that the workflow to build, flash and check this programs
- * output is not pretty. This is because on OSX (Mac) you can't access the
- * serial device on the host from the docker development container. This is a
- * known issue. I develop using the tool chain in the container, I step over to
- * my host machine to flash the program and monitor the serial device.
- *
  * @workflow:
  * step 1: Build the program using the `make` command in the development
  * container.
@@ -87,3 +80,11 @@ int main(void) {
   foo(str1);
   return 0;
 }
+
+/**
+ * @note: the workflow to build, flash and check this programs
+ * output is not pretty. This is because on OSX (Mac) you can't access the
+ * serial device on the host from the docker development container. This is a
+ * known issue. I develop using the tool chain in the container, I step over to
+ * my host machine to flash the program and monitor the serial device.
+ */

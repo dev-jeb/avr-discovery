@@ -13,12 +13,12 @@ void usart0_init(uint16_t ubrr_register_value) {
   UCSR0C = (1 << USBS0) | (3 << UCSZ00);
 }
 
-void usart0_transmit_byte(uint8_t ptr) {
+void usart0_transmit_byte(uint8_t data) {
   /* wait for the data buffer to be empty */
   while (!(UCSR0A & (1 << UDRE0))) {
   };
   /* Put data into buffer, sends the data */
-  UDR0 = ptr;
+  UDR0 = data;
 }
 
 void usart0_transmit_bytes(uint8_ptr_t ptr) {

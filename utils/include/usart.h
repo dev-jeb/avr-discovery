@@ -69,7 +69,7 @@ void usart0_init(uint16_t ubrr_register_value);
  * Asynchronously transmit a byte over the USART0 module.
  * @param: byte to transmit
  */
-void usart0_transmit_byte(uint8_t ptr);
+void usart0_transmit_byte(uint8_t data);
 
 /**
  * @function:
