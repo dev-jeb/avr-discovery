@@ -5,9 +5,23 @@
  *
  * @purpose: This will be an example of using the panic module to panic the
  * system. It is designed with the strategy pattern in mind. The user can define
- * function to be called when panic is called. This function will be passed the
- * argument that was passed to panic. I would like to expend it to accept
+ * a function to be called when we panic. This function will be passed
+ * the argument that was passed to panic. I would like to expand it to accept an
  * arbitrary number of arguments.
+ *
+ * @workflow:
+ * step 1: Build the program using the `make` command in the development
+ * container.
+ *
+ * step 2: Flash the program to the microcontroller using avrdude from the host
+ * using the following command
+ *
+ * >> avrdude -p atmega328p -c arduino -P /dev/<serial_device> -b <baud> -U \
+ *    flash:w:<executable>
+ *
+ * step 3: Check the output of the program using a serial monitor like minicom
+ *
+ * >> minicom -D /dev/<serial_device> -b <baud>
  */
 
 #include "panic.h"
@@ -24,12 +38,10 @@
  * passed the error message and will transmit it over the USART module.
  */
 void panic_handler(void_ptr_t arg1) {
-  // cast the void_ptr_t to a char_ptr_t
-  uint8_ptr_t error_msg = (uint8_ptr_t)arg1;
   // Initialize the USART module
   usart0_init(103);
   // send the error message over the USART module
-  usart0_transmit_string(error_msg);
+  usart0_transmit_bytes((uint8_ptr_t)arg1);
 }
 
 /**
@@ -37,25 +49,14 @@ void panic_handler(void_ptr_t arg1) {
  */
 int main(void) {
   // call panic with the user defined panic handler
-  panic(panic_handler, (void_ptr_t) "This is a test panic message");
+  panic(panic_handler, (void_ptr_t) "This is a test!!!");
   return 0;
 }
 
 /**
- * @notes:
- *
- * To see this work I run this directly on a physical microcontroller that is
- * connected to a serial terminal. First I build the project. I then go outside
- * of my container on my host machine and run avrdude to flash the
- * microcontroller. I dont do this in the container because I have yet to figure
- * out how to access the serial device from the container. I would also like to
- * find a way to run this using simavr and gdb or some combination to see this
- * serial output in a terminal. I will have to look into this.
- *
- * You  can use simavr to run the main.elf file. I have yet to find a way to be
- * able to see the actual serial output. However you can see that the USART is
- * configured and see the baud rate and data format running simavr with this
- * command.
- *
- * simavr -v -v -v -f 16000000 -m atmega328p -t main.elf
+ * @note: the workflow to build, flash and check this programs
+ * output is not pretty. This is because on OSX (Mac) you can't access the
+ * serial device on the host from the docker development container. This is a
+ * known issue. I develop using the tool chain in the container, I step over to
+ * my host machine to flash the program and monitor the serial device.
  */

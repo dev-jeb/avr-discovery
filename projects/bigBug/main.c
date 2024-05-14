@@ -1,7 +1,7 @@
 /**
  * @note: This bug has been fixed! I will leave everything in this file the way
- * that it is, the only thing I will do is add a switch example that shows the
- * fix.
+ * that it is, the only thing I will do is explain the fix at the end of the
+ * file.
  */
 
 /**
@@ -99,22 +99,6 @@ int main(void) {
   return 0;
 }
 
-#elif SWITCH == 3
-
-/**
- * The bug lies in the implementation of the strlen function. When we get the
- * length of the string we use the syntactic sugar str++ which expands to
- * str = str + 1. Therefore we are actually changing and reassiging the pointer.
- * If we wanted to print the string twice we would call strtlen() twice. The
- * second time we call it the pointer is pointing to the end of the string. We
- * get an infinite loop. This is the same reason that SWITCH == 1 fails if we
- * didnt use the constant 11. The fix would be to add an index variable to keep
- * track of how faw we have gone. We no longer use strlen in the usart module.
- * However, this is what the fixed usart implementation looks like.
- *
- * void usart0_transmit_bytes(uint8_ptr_t str {
- */
-
 #endif
 
 /**
@@ -129,11 +113,29 @@ int main(void) {
  * 4. Open a serial monitor and weap. I use
  *
  *    minicom -b 9600 -D /dev/<serial_device_name>
+ */
+
+/**
+ * @fix:
+ * The bug lies in the implementation of the strlen function. When we get the
+ * length of the string we use the syntactic sugar str++ which expands to
+ * str = str + 1. Therefore we are actually changing and reassiging the pointer.
+ * If we wanted to print the string twice we would call strtlen() twice. The
+ * second time we call it the pointer is pointing to the end of the string. We
+ * get an infinite loop. This is the same reason that SWITCH == 1 fails if we
+ * didn't use the constant 11. The fix would be to add an index variable to keep
+ * track of how faw we have gone. The usart implementation looks different now
+ * but we still have to apply this thinking.
  *
- * @implications:
- * You must not try to transmit a string from foo() over usart when that string
- * is a pointer passed to foo(). Instead you should declare the string in foo().
+ *  void usart0_transmit_bytes(uint8_ptr_t ptr)
+ *  {
+ *    uint32_t index = 0;
+ *    while (*(ptr + index))
+ *    {
+ *     usart0_transmit_byte(*(ptr + index));
+ *     index++;
+ *    }
+ *  }
  *
- * You must compile the code with the -Os flag. This is the only way that
- * results in expected behavior.
+ * take note of the index variable. This is the fix.
  */
